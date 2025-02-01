@@ -2,9 +2,8 @@ import NoteService from "../services/note.service.js";
 
 async function createNote(req, res, next) {
   try {
-    const { title, content } = req.body;
-    const note = await NoteService.createNote(title, content);
-
+    const { title, content, categoryIDs } = req.body;
+    const note = await NoteService.createNote(title, content, categoryIDs);
     // If everything is fine, respond with the created note
     res.status(201).json(note);
   } catch (error) {
@@ -28,7 +27,7 @@ async function getNoteById(req, res, next) {
     const note = await NoteService.getNoteById(id);
 
     if (!note) {
-      const error = new Error(`Note with id {id} not found`);
+      const error = new Error(`Note with id ${id} not found`);
       error.status = 404;
       return next(error); // Pass the error to the next middleware
     }
@@ -42,11 +41,11 @@ async function getNoteById(req, res, next) {
 async function updateNote(req, res, next) {
   try {
     const { id } = req.params;
-    const { title, content } = req.body;
-    const note = await NoteService.updateNote(id, title, content);
+    const { title, content, categoryIDs } = req.body;
+    const note = await NoteService.updateNote(id, title, content, categoryIDs);
 
     if (!note) {
-      const error = new Error(`Note with id {id} not found`);
+      const error = new Error(`Note with id ${id} not found`);
       error.status = 404;
       return next(error); // Pass the error to the next middleware
     }
@@ -59,11 +58,13 @@ async function updateNote(req, res, next) {
 
 async function deleteNote(req, res, next) {
   try {
+    console.log("here:", req.params);
     const { id } = req.params;
+    console.log(id);
     const note = await NoteService.deleteNote(id);
 
     if (!note) {
-      const error = new Error(`Note with id {id} not found`);
+      const error = new Error(`Note with id ${id} not found`);
       error.status = 404;
       return next(error); // Pass the error to the next middleware
     }

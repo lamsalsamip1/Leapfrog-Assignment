@@ -1,5 +1,6 @@
 import express from "express";
 import notes from "./routes/notes.js";
+import category from "./routes/category.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/error.js";
 import notFound from "./middleware/notFound.js";
@@ -18,7 +19,7 @@ app.use(logger);
 
 // Routes
 app.use("/api/notes", notes);
-
+app.use("/api/category", category);
 // Error handler
 app.use(notFound);
 app.use(errorHandler);

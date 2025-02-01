@@ -1,27 +1,24 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 
-const Note = sequelize.define(
-  "Note",
+const Category = sequelize.define(
+  "Category",
   {
-    note_id: {
+    category_id: {
+      // Renamed from 'id' to 'category_id'
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-
-    title: {
+    category_name: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: false,
+      unique: true,
     },
   },
   {
-    timestamps: true, // Adds createdAt & updatedAt fields automatically
+    timestamps: false,
   }
 );
 
-export default Note;
+export default Category;
