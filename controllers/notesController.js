@@ -1,104 +1,77 @@
-let notes = [
-  {
-    id: 1,
-    title: "Note 1",
-    content: "HTML is easy",
-    date: "2019-05-30T17:30:31.098Z",
-  },
-  {
-    id: 2,
-    title: "Note 2",
-    content: "Browser can execute only Javascript",
-    date: "2019-05-30T18:39:34.091Z",
-  },
-  {
-    id: 3,
-    title: "Note 3",
-    content: "GET and note are the most important methods of HTTP protocol",
-    date: "2019-05-30T19:20:14.298Z",
-  },
-];
+import NoteService from "../services/note.service.js";
 
-// @desc   Get all notes
-// @route  GET /api/notes
-export const getNotes = (req, res, next) => {
-  const limit = parseInt(req.query.limit);
+async function createNote(req, res, next) {
+  try {
+    const { title, content } = req.body;
+    const note = await NoteService.createNote(title, content);
 
-  if (!isNaN(limit) && limit > 0) {
-    return res.status(200).json(notes.slice(0, limit));
+    // If everything is fine, respond with the created note
+    res.status(201).json(note);
+  } catch (error) {
+    // If an error occurs, pass it to the error-handling middleware
+    next(error);
   }
+}
 
-  res.status(200).json(notes);
-};
-
-// @desc    Get single note
-// @route   GET /api/notes/:id
-export const getNote = (req, res, next) => {
-  const id = parseInt(req.params.id);
-  const note = notes.find((note) => note.id === id);
-
-  if (!note) {
-    const error = new Error(`A note with the id of ${id} was not found`);
-    error.status = 404;
-    return next(error);
+async function getAllNotes(req, res, next) {
+  try {
+    const notes = await NoteService.getAllNotes();
+    res.status(200).json(notes);
+  } catch (error) {
+    next(error);
   }
+}
 
-  res.status(200).json(note);
-};
+async function getNoteById(req, res, next) {
+  try {
+    const { id } = req.params;
+    const note = await NoteService.getNoteById(id);
 
-// @desc    Create new note
-// @route   note /api/notes
-export const createNote = (req, res, next) => {
-  const newnote = {
-    id: notes.length + 1,
-    title: req.body.title,
-    content: req.body.content,
-  };
+    if (!note) {
+      const error = new Error(`Note with id {id} not found`);
+      error.status = 404;
+      return next(error); // Pass the error to the next middleware
+    }
 
-  if (!newnote.title) {
-    const error = new Error(`Please include a title`);
-    error.status = 400;
-    return next(error);
+    res.status(200).json(note);
+  } catch (error) {
+    next(error);
   }
-  if (!newnote.content) {
-    const error = new Error(`Please include a content`);
-    error.status = 400;
-    return next(error);
+}
+
+async function updateNote(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { title, content } = req.body;
+    const note = await NoteService.updateNote(id, title, content);
+
+    if (!note) {
+      const error = new Error(`Note with id {id} not found`);
+      error.status = 404;
+      return next(error); // Pass the error to the next middleware
+    }
+
+    res.status(200).json(note);
+  } catch (error) {
+    next(error);
   }
+}
 
-  notes.push(newnote);
-  res.status(201).json(notes);
-};
+async function deleteNote(req, res, next) {
+  try {
+    const { id } = req.params;
+    const note = await NoteService.deleteNote(id);
 
-// @desc    Update note
-// @route   PUT /api/notes/:id
-export const updateNote = (req, res, next) => {
-  const id = parseInt(req.params.id);
-  const note = notes.find((note) => note.id === id);
+    if (!note) {
+      const error = new Error(`Note with id {id} not found`);
+      error.status = 404;
+      return next(error); // Pass the error to the next middleware
+    }
 
-  if (!note) {
-    const error = new Error(`A note with the id of ${id} was not found`);
-    error.status = 404;
-    return next(error);
+    res.status(204).send(); // Send a 204 No Content response for successful deletion
+  } catch (error) {
+    next(error);
   }
+}
 
-  note.title = req.body.title;
-  note.content = req.body.content;
-  res.status(200).json(notes);
-};
-
-// @desc    Delete note
-// @route   DELETE /api/notes/:id
-export const deleteNote = (req, res, next) => {
-  const id = parseInt(req.params.id);
-  const note = notes.find((note) => note.id === id);
-
-  if (!note) {
-    const error = new Error(`A note with the id of ${id} was not found`);
-    error.status = 404;
-    return next(error);
-  }
-
-  notes = notes.filter((note) => note.id !== id);
-  res.status(200).json(notes);
-};
+export { createNote, getAllNotes, getNoteById, updateNote, deleteNote };

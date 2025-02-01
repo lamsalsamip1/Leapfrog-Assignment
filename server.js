@@ -1,15 +1,11 @@
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 import notes from "./routes/notes.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/error.js";
 import notFound from "./middleware/notFound.js";
-const port = process.env.PORT || 8000;
+import sequelize from "./config/db.js";
 
-// Get the directory name
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const port = process.env.PORT || 8000;
 
 const app = express();
 
@@ -20,9 +16,6 @@ app.use(express.urlencoded({ extended: false }));
 // Logger middleware
 app.use(logger);
 
-// setup static folder
-app.use(express.static(path.join(__dirname, "public")));
-
 // Routes
 app.use("/api/notes", notes);
 
@@ -30,4 +23,17 @@ app.use("/api/notes", notes);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+const startServer = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Database connected...");
+    await sequelize.sync(); // Sync models with DB
+    app.listen(process.env.PORT, () =>
+      console.log(`Server running on port ${port}`)
+    );
+  } catch (error) {
+    console.error("Database connection failed:", error);
+  }
+};
+
+startServer();
