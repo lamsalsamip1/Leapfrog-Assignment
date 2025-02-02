@@ -13,7 +13,15 @@ const Category = sequelize.define(
     category_name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Users", // Reference the User model
+        key: "user_id", // Foreign key to the 'id' column of the User model
+      },
+      onDelete: "CASCADE", // Delete notes if the user is deleted
     },
   },
   {

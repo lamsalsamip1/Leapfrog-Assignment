@@ -1,10 +1,12 @@
 import express from "express";
 import notes from "./routes/notes.js";
 import category from "./routes/category.js";
+import user from "./routes/user.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/error.js";
 import notFound from "./middleware/notFound.js";
 import sequelize from "./config/db.js";
+import authMiddleware from "./middleware/auth.js";
 
 const port = process.env.PORT || 8000;
 
@@ -18,8 +20,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(logger);
 
 // Routes
-app.use("/api/notes", notes);
-app.use("/api/category", category);
+app.use("/api/notes", authMiddleware, notes);
+app.use("/api/category", authMiddleware, category);
+app.use("/api/user", user);
+
 // Error handler
 app.use(notFound);
 app.use(errorHandler);
