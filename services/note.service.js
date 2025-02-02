@@ -1,7 +1,7 @@
 import db from "../models/index.js";
-import Category from "../models/category.model.js"; // Get the Category model
 
 const Note = db.Note; // Get the Note model
+const Category = db.Category; // Get the Category model
 
 const NoteService = {
   // Create a new note
