@@ -33,6 +33,13 @@ const User = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false, // New users are not verified by default
     },
+    twoFAEnabled: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    twoFASecret: {
+      type: DataTypes.STRING,
+    },
   },
   {
     timestamps: true, // Keep timestamps enabled

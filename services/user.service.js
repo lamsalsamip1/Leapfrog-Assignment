@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../models/index.js";
 import { sendVerificationEmail } from "../utils/sendEmail.js";
+import speakeasy from "speakeasy";
+import QRCode from "qrcode";
 
 const User = db.User;
 
@@ -80,7 +82,7 @@ const UserService = {
     };
   },
 
-  // Get a user by ID
+  // ------Get a user by ID------
   async getUserById(userId) {
     const user = await User.findByPk(userId);
     if (!user) {
@@ -90,6 +92,8 @@ const UserService = {
     }
     return user;
   },
+
+  //--------LOGIN USER---------
   async loginUser(email, password) {
     const user = await User.scope("withPassword").findOne({
       where: {
@@ -120,6 +124,21 @@ const UserService = {
       throw error;
     }
 
+    // Check if two-factor authentication is enabled, ask OTP if yes
+    if (user.twoFAEnabled) {
+      console.log("hey");
+      const tempToken = jwt.sign(
+        { id: user.user_id, twoFARequired: true },
+        process.env.JWT_SECRET,
+        { expiresIn: "5m" } // Short-lived token
+      );
+
+      return {
+        twoFARequired: true,
+        tempToken,
+      };
+    }
+
     // Generate a JWT token
     const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRY,
@@ -129,7 +148,7 @@ const UserService = {
     // Convert the user instance to a plain object and remove the password field
     const userWithoutPassword = user.toJSON();
     delete userWithoutPassword.password;
-    return { token, user: userWithoutPassword };
+    return { token, user: userWithoutPassword, twoFARequired: false };
   },
 
   //resend verification email
@@ -165,6 +184,78 @@ const UserService = {
 
     return {
       message: "Verification email sent successfully.",
+    };
+  },
+
+  // enable 2fa
+  async enable2FA(userId) {
+    // generate secret
+    const secret = speakeasy.generateSecret({
+      name: "NotesApp",
+      length: 20,
+    });
+
+    // save secret in database
+    await User.update(
+      { twoFASecret: secret.base32, twoFAEnabled: true },
+      { where: { user_id: userId } }
+    );
+
+    // generate otpauth url and qrcode to scan by user
+    const otpAuthUrl = secret.otpauth_url;
+    const qrCodeImage = await QRCode.toDataURL(otpAuthUrl);
+
+    if (!qrCodeImage) {
+      //rollback changes
+      await User.update(
+        { twoFASecret: null, twoFAEnabled: false },
+        { where: { user_id: userId } }
+      );
+
+      const error = new Error("Failed to generate QR code.");
+      error.status = 500; // 500 Internal Server Error
+      throw error;
+    }
+
+    return { qrCodeImage };
+  },
+
+  // verify 2fa with temp token
+  async verify2FA(tempToken, otp) {
+    console.log("TT: ", tempToken);
+    const decoded = jwt.verify(tempToken, process.env.JWT_SECRET);
+    const userId = decoded.id;
+    const user = await User.findByPk(userId);
+
+    const verified = speakeasy.totp.verify({
+      secret: user.twoFASecret,
+      encoding: "base32",
+      token: otp,
+    });
+
+    if (!verified) {
+      const error = new Error("Invalid OTP.");
+      error.status = 401; // 401 Unauthorized
+      throw error;
+    }
+
+    // Generate a JWT token
+    const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRY,
+    });
+
+    // Return the token and user details (without password)-default scope
+    return { token, user: user.toJSON() };
+  },
+  // Disable two factor authentication
+  async disable2FA(userId) {
+    await User.update(
+      { twoFASecret: null, twoFAEnabled: false },
+      { where: { user_id: userId } }
+    );
+
+    return {
+      message: "Two-factor authentication disabled successfully.",
     };
   },
 };

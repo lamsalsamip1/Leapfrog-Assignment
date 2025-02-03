@@ -1,4 +1,3 @@
-// controllers/user.controller.js
 import UserService from "../services/user.service.js";
 
 // Register new user
@@ -28,10 +27,20 @@ export const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    // Call the service to authenticate the user and generate a token
-    const { token, user } = await UserService.loginUser(email, password);
+    // Authenticate user and check if they have enabled 2FA
+    const { token, tempToken, user, twoFARequired } =
+      await UserService.loginUser(email, password);
 
-    // Respond with the token and user details
+    console.log("twoFARequired", twoFARequired);
+    if (twoFARequired) {
+      // If 2FA is enabled, return the tempToken and request OTP verification
+      return res.status(401).json({
+        message: "Two-factor authentication required. Enter OTP.",
+        tempToken, // Temporary token valid for OTP verification only
+      });
+    }
+
+    // If 2FA is not enabled, return the normal auth token
     res.json({
       message: "Login successful",
       token,
@@ -87,6 +96,61 @@ export const resendEmail = async (req, res, next) => {
     // Respond with the success message
     res.json({
       message,
+    });
+  } catch (error) {
+    next(error); // Pass the error to the errorHandler
+  }
+};
+
+//enable 2FA
+export const enable2FA = async (req, res, next) => {
+  const userId = req.user.id; // From the authMiddleware
+
+  try {
+    // Call the service to enable 2FA
+    const { qrCodeImage } = await UserService.enable2FA(userId);
+
+    // Respond with the success message
+    res.json({
+      message:
+        "Two-factor authentication enabled successfully. Tell user to scan the QR code.",
+      qrCode: qrCodeImage,
+    });
+  } catch (error) {
+    next(error); // Pass the error to the errorHandler
+  }
+};
+
+//disable 2FA
+export const disable2FA = async (req, res, next) => {
+  const userId = req.user.id; // From the authMiddleware
+
+  try {
+    // Call the service to disable 2FA
+    const message = await UserService.disable2FA(userId);
+
+    // Respond with the success message
+    res.json({
+      message,
+    });
+  } catch (error) {
+    next(error); // Pass the error to the errorHandler
+  }
+};
+
+// verify 2FA OTP
+export const verifyOTP = async (req, res, next) => {
+  const { otp } = req.body;
+  const tempToken = req.header("Authorization");
+  console.log(tempToken);
+  try {
+    // Call the service to verify the OTP
+    const { token, user } = await UserService.verify2FA(tempToken, otp);
+    // Respond with the success message
+    res.json({
+      message: "OTP verified successfully. You are now logged in.",
+      token,
+      user,
     });
   } catch (error) {
     next(error); // Pass the error to the errorHandler
