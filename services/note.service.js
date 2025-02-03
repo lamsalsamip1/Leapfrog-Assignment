@@ -6,12 +6,7 @@ const Category = db.Category; // Get the Category model
 const NoteService = {
   // Create a new note
   async createNote(title, content, categoryIDs, user_id) {
-    // Create the note first
-    const note = await Note.create({
-      title,
-      content,
-      user_id: user_id,
-    });
+    let note;
     if (categoryIDs && categoryIDs.length) {
       const categories = await Category.findAll({
         where: {
@@ -22,13 +17,23 @@ const NoteService = {
       if (categories.length !== categoryIDs.length) {
         // If the number of categories found doesn't match the number of categories provided
         // (i.e., some categories don't exist or don't belong to the user)
-        await note.destroy(); // Rollback the note creation
         const error = new Error("Invalid category.");
         error.status = 404; // 409 Conflict for duplicate resources
         throw error;
       }
       console.log("categories here:", categories);
+      note = await Note.create({
+        title,
+        content,
+        user_id: user_id,
+      });
       await note.addCategories(categories);
+    } else {
+      note = await Note.create({
+        title,
+        content,
+        user_id: user_id,
+      });
     }
 
     return this.getNoteById(note.note_id); // Return the created note
