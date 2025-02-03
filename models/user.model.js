@@ -29,6 +29,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false, // New users are not verified by default
+    },
   },
   {
     timestamps: true, // Keep timestamps enabled

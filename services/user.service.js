@@ -2,6 +2,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../models/index.js";
+import { sendVerificationEmail } from "../utils/sendEmail.js";
 
 const User = db.User;
 
@@ -33,10 +34,50 @@ const UserService = {
       password: hashedPassword,
     });
 
-    // Return the user without the password
-    const userWithoutPassword = user.toJSON();
-    delete userWithoutPassword.password;
-    return userWithoutPassword;
+    // create a verification token and send via email
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EMAIL_EXPIRY,
+    });
+    try {
+      await sendVerificationEmail(user.firstName, user.email, token);
+    } catch (err) {
+      const error = new Error("Failed to send verification email.");
+      error.status = 500; // 500 Internal Server Error
+      throw error;
+    }
+
+    // return succcesful message
+    return {
+      message: "User created successfully. Please verify your email.",
+    };
+  },
+
+  // Verify user email
+  async verifyEmail(token) {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const email = decoded.email;
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+    if (!user) {
+      const error = new Error("User not found.");
+      error.status = 404; // 404 Not Found
+      throw error;
+    }
+    // check if already verified
+    if (user.isVerified) {
+      const error = new Error("Email already verified.");
+      error.status = 400; // 400 Bad Request
+      throw error;
+    }
+    user.isVerified = true;
+    await user.save();
+
+    return {
+      message: "Email verified successfully. You can now login.",
+    };
   },
 
   // Get a user by ID
@@ -62,6 +103,14 @@ const UserService = {
       throw error;
     }
 
+    // check if user has verified email
+    if (!user.isVerified) {
+      const error = new Error("Please verify your email first.");
+      // 403 Forbidden. different code used to distinguish in frontend. show resend verify link in this case
+      error.status = 403;
+      throw error;
+    }
+
     // Compare the provided password with the hashed password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -81,6 +130,42 @@ const UserService = {
     const userWithoutPassword = user.toJSON();
     delete userWithoutPassword.password;
     return { token, user: userWithoutPassword };
+  },
+
+  //resend verification email
+  async resendVerificationEmail(email) {
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      const error = new Error("User not found.");
+      error.status = 404; // 404 Not Found
+      throw error;
+    }
+
+    if (user.isVerified) {
+      const error = new Error("Email already verified.");
+      error.status = 400; // 400 Bad Request
+      throw error;
+    }
+
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EMAIL_EXPIRY,
+    });
+    try {
+      await sendVerificationEmail(user.firstName, user.email, token);
+    } catch (err) {
+      const error = new Error("Failed to send verification email.");
+      error.status = 500; // 500 Internal Server Error
+      throw error;
+    }
+
+    return {
+      message: "Verification email sent successfully.",
+    };
   },
 };
 

@@ -7,17 +7,16 @@ export const registerUser = async (req, res, next) => {
 
   try {
     // Call the service to create the user
-    const newUser = await UserService.createUser(
+    const userMsg = await UserService.createUser(
       firstName,
       lastName,
       email,
       password
     );
 
-    // Respond with the user data (don't return password)
+    // Respond with the success message, whcih asks to verify email
     res.status(201).json({
-      message: "User registered successfully",
-      user: newUser,
+      message: userMsg,
     });
   } catch (error) {
     next(error); // Pass the error to the errorHandler
@@ -54,6 +53,40 @@ export const getUserProfile = async (req, res, next) => {
     res.json({
       message: "User details fetched successfully",
       user: user,
+    });
+  } catch (error) {
+    next(error); // Pass the error to the errorHandler
+  }
+};
+
+// verify email
+export const verifyEmail = async (req, res, next) => {
+  const token = req.params.token;
+
+  try {
+    // Call the service to verify the email
+    const message = await UserService.verifyEmail(token);
+
+    // Respond with the success message
+    res.json({
+      message,
+    });
+  } catch (error) {
+    next(error); // Pass the error to the errorHandler
+  }
+};
+
+//resend email
+export const resendEmail = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    // Call the service to resend the email
+    const message = await UserService.resendVerificationEmail(email);
+
+    // Respond with the success message
+    res.json({
+      message,
     });
   } catch (error) {
     next(error); // Pass the error to the errorHandler
