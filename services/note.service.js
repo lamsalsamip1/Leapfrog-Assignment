@@ -23,7 +23,9 @@ const NoteService = {
         // If the number of categories found doesn't match the number of categories provided
         // (i.e., some categories don't exist or don't belong to the user)
         await note.destroy(); // Rollback the note creation
-        return null;
+        const error = new Error("Invalid category.");
+        error.status = 404; // 409 Conflict for duplicate resources
+        throw error;
       }
       console.log("categories here:", categories);
       await note.addCategories(categories);
