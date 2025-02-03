@@ -7,10 +7,80 @@ import errorHandler from "./middleware/error.js";
 import notFound from "./middleware/notFound.js";
 import sequelize from "./config/db.js";
 import authMiddleware from "./middleware/auth.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsDoc from "swagger-jsdoc";
 
 const port = process.env.PORT || 8000;
 
 const app = express();
+
+//Swagger setup
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Notes API Documentation",
+      version: "1.0.0",
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+      // Define schemas
+      schemas: {
+        Note: {
+          type: "object",
+          properties: {
+            note_id: { type: "integer" },
+            title: { type: "string" },
+            content: { type: "string" },
+            user_id: { type: "integer" },
+            createdAt: { type: "datetime" },
+            updatedAt: { type: "datetime" },
+          },
+        },
+        Category: {
+          type: "object",
+          properties: {
+            category_id: { type: "integer" },
+            category_name: { type: "string" },
+          },
+        },
+        NoteCategory: {
+          type: "object",
+          properties: {
+            id: { type: "integer" },
+            note_id: { type: "integer" },
+            category_id: { type: "integer" },
+          },
+        },
+        User: {
+          type: "object",
+          properties: {
+            user_id: { type: "integer" },
+            firstName: { type: "string" },
+            lastName: { type: "string" },
+            email: { type: "string" },
+            password: { type: "string" },
+            createdAt: { type: "datetime" },
+            updatedAt: { type: "datetime" },
+            isVerified: { type: "boolean" },
+            twoFAEnabled: { type: "boolean" },
+            twoFASecret: { type: "string" },
+          },
+        },
+      },
+    },
+  },
+  apis: ["./routes/*.js"], // Your routes
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Body parser middleware
 app.use(express.json());

@@ -61,7 +61,7 @@ async function updateNote(req, res, next) {
     // check if req.user.id is the same as the user_id of the note
     if (note.user_id !== user_id) {
       const error = new Error("You are not authorized to update this note");
-      error.status = 403;
+      error.status = 401;
       return next(error);
     }
     const Note = await NoteService.updateNote(
@@ -91,8 +91,8 @@ async function deleteNote(req, res, next) {
 
     // check if req.user.id is the same as the user_id of the note
     if (note.user_id !== user_id) {
-      const error = new Error("You are not authorized to update this note");
-      error.status = 403;
+      const error = new Error("You are not authorized to delete this note");
+      error.status = 401;
       return next(error);
     }
 

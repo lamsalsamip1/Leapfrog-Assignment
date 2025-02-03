@@ -222,7 +222,6 @@ const UserService = {
 
   // verify 2fa with temp token
   async verify2FA(tempToken, otp) {
-    console.log("TT: ", tempToken);
     const decoded = jwt.verify(tempToken, process.env.JWT_SECRET);
     const userId = decoded.id;
     const user = await User.findByPk(userId);

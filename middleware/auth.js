@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => {
-  const token = req.header("Authorization");
+  const token =
+    req.headers["authorization"]?.split(" ")[1] || req.headers["authorization"];
+
   if (!token) {
     const error = new Error("Access denied. User not authorized.");
     error.status = 401; // Set status code

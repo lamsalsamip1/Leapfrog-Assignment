@@ -34,7 +34,7 @@ export const loginUser = async (req, res, next) => {
     console.log("twoFARequired", twoFARequired);
     if (twoFARequired) {
       // If 2FA is enabled, return the tempToken and request OTP verification
-      return res.status(401).json({
+      return res.status(200).json({
         message: "Two-factor authentication required. Enter OTP.",
         tempToken, // Temporary token valid for OTP verification only
       });
@@ -141,8 +141,8 @@ export const disable2FA = async (req, res, next) => {
 // verify 2FA OTP
 export const verifyOTP = async (req, res, next) => {
   const { otp } = req.body;
-  const tempToken = req.header("Authorization");
-  console.log(tempToken);
+  const tempToken =
+    req.headers["authorization"]?.split(" ")[1] || req.headers["authorization"];
   try {
     // Call the service to verify the OTP
     const { token, user } = await UserService.verify2FA(tempToken, otp);
@@ -153,6 +153,8 @@ export const verifyOTP = async (req, res, next) => {
       user,
     });
   } catch (error) {
+    error.status = 401;
+    error.message = "Verification of OTP failed";
     next(error); // Pass the error to the errorHandler
   }
 };
