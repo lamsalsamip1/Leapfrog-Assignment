@@ -4,6 +4,7 @@ import Searchbar from '../components/Searchbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import Tabbar from '../components/Tabbar'
+import Notecard from '../components/Notecard'
 const Home = () => {
 
     return (
@@ -26,8 +27,10 @@ const Home = () => {
                     <Tabbar />
 
 
-                    <div className='flex p-6 grow-7 bg-green-400'>
-                        Note cards
+                    <div className='flex grow-7 justify-between'>
+                        <Notecard bgColor="#FFEAA7" />
+                        <Notecard bgColor="#FBA5A5" />
+                        <Notecard bgColor="#CCEABB" />
                     </div>
 
 
