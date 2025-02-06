@@ -6,6 +6,7 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import Tabbar from '../components/Tabbar'
 import Notecard from '../components/Notecard'
 const Home = () => {
+    const noteCategories = ["All", "Work", "School", "Thoughts"];
 
     return (
         <>
@@ -23,8 +24,11 @@ const Home = () => {
                             <p className='text-[#303841] text-lg'>New Note</p>
                         </div>
                     </div>
+                    <div className='flex grow-2 gap-x-6 text-[#8B8B8B]'>
 
-                    <Tabbar />
+                        <Tabbar categories={noteCategories} defaultVal="All" />
+                        <button className="text-[#303841]  h-8 ml-4">+ Add Category</button>
+                    </div>
 
 
                     <div className='flex grow-7 justify-between'>

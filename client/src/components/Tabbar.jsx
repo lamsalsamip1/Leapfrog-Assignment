@@ -1,24 +1,32 @@
 import React, { useState } from 'react'
 
-const Tabbar = () => {
+const Tabbar = ({ categories, defaultVal, width = 20, onTabChange }) => {
 
-    const categories = ["All", "Work", "School", "Thoughts"];
-    const [selected, setSelected] = useState("All");
+
+    const [activeTab, setActiveTab] = useState(defaultVal);
+
+    const handleTabClick = (category) => {
+        setActiveTab(category);
+        if (onTabChange) {
+            onTabChange(category);
+        }
+    };
 
     return (
-        <div className='flex grow-2 gap-x-6 text-[#8B8B8B]'>
-            {categories.map((category) => (
-                <label
-                    key={category}
-                    className={`cursor-pointer h-8 w-20 border-b-2 pt-1  ${selected === category ? "text-[#6A7EFC] border-[#6A7EFC]" : "border-transparent"}`}
-                    onClick={() => setSelected(category)}
-                >
-                    {category}
-                </label>
-            ))
+        <>
+            {
+                categories.map((category) => (
+                    <label
+                        key={category}
+                        className={`cursor-pointer font-semibold text-sm uppercase h-8 w-${width} border-b-2 pt-1   ${activeTab === category ? "text-[#6A7EFC] border-[#6A7EFC]" : "border-transparent"}`}
+                        onClick={() => handleTabClick(category)}
+                    >
+                        {category}
+                    </label>
+                ))
             }
-            <button className="text-[#303841]  h-8 ml-4">+ Add Category</button>
-        </div >
+
+        </>
     )
 }
 
