@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 
 const Navbar = () => {
 
-    const [selected, setSelected] = useState('Notes');
+    const location = useLocation();
+    const currentPath = location.pathname;
+    const selected = currentPath === '/' ? 'Notes' : 'Profile';
 
-    const handleSelect = (item) => {
-        setSelected(item);
-    };
 
     return (
         <nav className='flex flex-col h-full w-1/6 bg-[#6A7EFC] items-center p-6 pt-16 justify-around'>
@@ -17,19 +17,23 @@ const Navbar = () => {
 
             <ul className='flex flex-col text-white space-y-4 grow-8 w-full text-center'>
 
-                <li
-                    className={`cursor-pointer p-2  ${selected === 'Notes' ? 'bg-white text-black' : ''}`}
-                    onClick={() => handleSelect('Notes')}
-                >
-                    Notes
-                </li>
+                <Link to='/'>
+                    <li
+                        className={`cursor-pointer p-2  ${selected === 'Notes' ? 'bg-white text-black' : ''}`}
 
-                <li
-                    className={`cursor-pointer p-2 ${selected === 'Profile' ? 'bg-white text-black' : ''}`}
-                    onClick={() => handleSelect('Profile')}
-                >
-                    Profile
-                </li>
+                    >
+                        Notes
+                    </li>
+                </Link>
+
+                <Link to='/profile'>
+                    <li
+                        className={`cursor-pointer p-2 ${selected === 'Profile' ? 'bg-white text-black' : ''}`}
+
+                    >
+                        Profile
+                    </li>
+                </Link>
             </ul>
             {/* Navigation links */}
 

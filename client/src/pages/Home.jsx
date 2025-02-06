@@ -14,7 +14,7 @@ const Home = () => {
 
                 <Navbar />
 
-                <main className='flex flex-col h-full w-5/6 bg-[#F3F3F3] p-16 pb-4'>
+                <main className='flex flex-col h-full bg-[#F2F9FF] w-5/6  p-16 pb-4'>
 
                     <div className='flex flex-row grow-1 justify-between pr-4'>
                         <Searchbar />
