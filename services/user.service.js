@@ -230,9 +230,11 @@ const UserService = {
       secret: user.twoFASecret,
       encoding: "base32",
       token: otp,
+      window: 1,
     });
 
     if (!verified) {
+      console.log("not verified");
       const error = new Error("Invalid OTP.");
       error.status = 401; // 401 Unauthorized
       throw error;

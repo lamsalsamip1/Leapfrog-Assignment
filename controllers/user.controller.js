@@ -33,10 +33,14 @@ export const loginUser = async (req, res, next) => {
 
     console.log("twoFARequired", twoFARequired);
     if (twoFARequired) {
-      // If 2FA is enabled, return the tempToken and request OTP verification
-      return res.status(200).json({
+      // If 2FA is enabled, set the tempToken cookie and request OTP verification
+      res.cookie("tempToken", tempToken, {
+        httpOnly: true,
+        secure: true, // Use true in production with HTTPS
+        sameSite: "Strict", // Prevent CSRF
+      });
+      return res.status(206).json({
         message: "Two-factor authentication required. Enter OTP.",
-        tempToken, // Temporary token valid for OTP verification only
       });
     }
 
@@ -58,7 +62,7 @@ export const loginUser = async (req, res, next) => {
 // Get user details by ID
 export const getUserProfile = async (req, res, next) => {
   const userId = req.user.id; // From the authMiddleware
-  console.log(req.user);
+  // console.log(req.user);
   try {
     // Call the service to fetch the user
     const user = await UserService.getUserById(userId);
@@ -143,11 +147,26 @@ export const disable2FA = async (req, res, next) => {
 // verify 2FA OTP
 export const verifyOTP = async (req, res, next) => {
   const { otp } = req.body;
-  const tempToken =
-    req.headers["authorization"]?.split(" ")[1] || req.headers["authorization"];
+  console.log(otp);
+  const tempToken = req.cookies.tempToken;
   try {
     // Call the service to verify the OTP
     const { token, user } = await UserService.verify2FA(tempToken, otp);
+
+    // Set the auth token in cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+
+    //cleanup temptoken cookie
+    res.clearCookie("tempToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+
     // Respond with the success message
     res.json({
       message: "OTP verified successfully. You are now logged in.",
@@ -155,8 +174,9 @@ export const verifyOTP = async (req, res, next) => {
       user,
     });
   } catch (error) {
+    console.log("error received");
     error.status = 401;
-    error.message = "Verification of OTP failed";
+    error.message = "Invalid OTP";
     next(error); // Pass the error to the errorHandler
   }
 };
@@ -178,7 +198,7 @@ export const logout = async (req, res) => {
 
 //edit user details
 export const editUserDetails = async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const userId = req.user.id;
   const { userFirstName, userLastName } = req.body;
   // console.log(firstName);

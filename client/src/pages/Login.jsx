@@ -5,11 +5,20 @@ import Button from '../components/Button'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import Spinner from '../components/Spinner'
-
+import useAuth from '../hooks/useAuth'
 
 const Login = () => {
 
+
     const navigate = useNavigate()
+
+    const User = useAuth();
+    if (User) {
+        setTimeout(() => {
+            navigate("/notes");
+        }, 2000);
+        navigate('/notes');
+    }
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -39,6 +48,12 @@ const Login = () => {
 
             const data = await response.json();
             if (response.ok) {
+                // 2FA required
+                if (response.status === 206) {
+                    navigate("/twofa");
+                    return;
+
+                }
                 setError(false);
                 setMessage("Login successful ! ");
 
