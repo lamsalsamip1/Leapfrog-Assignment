@@ -8,6 +8,8 @@ import {
   enable2FA,
   disable2FA,
   verifyOTP,
+  logout,
+  editUserDetails,
 } from "../controllers/user.controller.js";
 import authMiddleware from "../middleware/auth.js";
 
@@ -191,5 +193,49 @@ router.post("/verify-otp", verifyOTP);
  *         description: User not found.
  */
 router.get("/profile", authMiddleware, getUserProfile);
+
+/**
+ * @swagger
+ * /api/user/logout:
+ *  get:
+ *   summary: Logout user
+ *   tags: [User]
+ *   responses:
+ *      200:
+ *        description: Logged out
+ *      400:
+ *        description: Logout failed
+ */
+router.post("/logout", logout);
+
+// make swagger doc and api for edit user details
+//edit user details
+
+/**
+ * @swagger
+ * /api/user/edit:
+ *   put:
+ *     summary: Edit user details
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User details updated successfully.
+ *       400:
+ *         description: User not found.
+ */
+router.put("/edit", authMiddleware, editUserDetails);
 
 export default router;

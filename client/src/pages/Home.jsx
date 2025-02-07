@@ -6,42 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import Tabbar from '../components/Tabbar'
 import Notecard from '../components/Notecard'
-
+import useAuth from '../hooks/useAuth'
 
 const Home = () => {
 
     const navigate = useNavigate();
-    const [User, setUser] = useState(null);
-    useEffect(() => {
-        const checkLogin = async () => {
-            try {
-                const response = await fetch("http://localhost:5000/api/user/profile", {
-                    method: "GET",
-                    credentials: "include", // Include cookies
-                });
-
-                if (!response.ok) {
-                    throw new Error("Not authenticated");
-                }
-
-                const data = await response.json();
-
-                setUser(data.user); // Store user details in state
-
-
-            } catch (error) {
-                console.error("User not logged in:", error);
-                navigate("/"); // Redirect to login if not authenticated
-            }
-        };
-
-        checkLogin();
-
-    }, [navigate]); // Runs only on mount
-
-    useEffect(() => {
-        console.log("Updated User State:", User);
-    }, [User]); // Runs every time User updates
+    const User = useAuth();
 
     const noteCategories = ["All", "Work", "School", "Thoughts"];
 

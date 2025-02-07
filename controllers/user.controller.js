@@ -40,10 +40,14 @@ export const loginUser = async (req, res, next) => {
       });
     }
 
-    // If 2FA is not enabled, return the normal auth token
+    // If 2FA is not enabled, return the normal auth token in cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true, // Use true in production with HTTPS
+      sameSite: "Strict", // Prevent CSRF
+    });
     res.json({
       message: "Login successful",
-      token,
       user,
     });
   } catch (error) {
@@ -153,6 +157,44 @@ export const verifyOTP = async (req, res, next) => {
   } catch (error) {
     error.status = 401;
     error.message = "Verification of OTP failed";
+    next(error); // Pass the error to the errorHandler
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+    res.json({ message: "Logged out" });
+  } catch (err) {
+    const error = new Error("Logout failed");
+    error.status = 400;
+    next(error);
+  }
+};
+
+//edit user details
+export const editUserDetails = async (req, res, next) => {
+  console.log(req.body);
+  const userId = req.user.id;
+  const { userFirstName, userLastName } = req.body;
+  // console.log(firstName);
+  try {
+    // Call the service to edit the user details
+    const message = await UserService.editUserDetails(
+      userId,
+      userFirstName,
+      userLastName
+    );
+
+    // Respond with the success message
+    res.json({
+      message,
+    });
+  } catch (error) {
     next(error); // Pass the error to the errorHandler
   }
 };

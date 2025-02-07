@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons'
 import Button from '../components/Button'
@@ -14,6 +14,17 @@ const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
+    const [isError, setError] = useState(false);
+
+    useEffect(() => {
+        if (message) {
+            const timer = setTimeout(() => {
+                setMessage(""); // Clear message after 5 seconds
+            }, 5000);
+            return () => clearTimeout(timer); // Cleanup timeout on component unmount or message change
+        }
+    }, [message]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -28,11 +39,19 @@ const Login = () => {
 
             const data = await response.json();
             if (response.ok) {
-                alert("Login successful");
-                // Redirect to the home page
-                navigate("/notes");
+                setError(false);
+                setMessage("Login successful ! ");
+
+                setTimeout(() => {
+                    navigate("/notes");
+                }
+                    , 2000);
+
+
             } else {
-                alert(data.message || "Login failed");
+                setMessage(data.msg || "Login failed !");
+                setError(true);
+
             }
         } catch (error) {
             console.error("Error:", error);
@@ -43,8 +62,10 @@ const Login = () => {
     };
 
     return (
-        <div className='h-screen w-screen bg-[#EDF2F6] flex'>
-
+        <div className='h-screen w-screen bg-[#EDF2F6] flex '>
+            {message && (
+                <div className={`fixed left-2/5 auto h-12 w-1/5   text-white text-center py-3 z-10 transition-discrete ease-in ${isError ? 'bg-red-400' : 'bg-[#6A7EFC]'} `}>{message}</div>
+            )}
 
             <div className=' flex h-2/3 w-2/3 m-auto shadow-lg bg-white'>
 
@@ -74,7 +95,7 @@ const Login = () => {
                         </p>
                     </form>
                 </div>
-                <div className='p-4'>
+                <div className='absolute top-0 right-0 p-4'>
                     {/* Show loading message */}
                     {loading && <Spinner text="Registering.. Please wait" />}
                 </div>

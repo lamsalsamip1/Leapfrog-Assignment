@@ -10,6 +10,7 @@ import authMiddleware from "./middleware/auth.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const port = process.env.PORT || 8000;
 
@@ -80,7 +81,16 @@ const swaggerOptions = {
   apis: ["./routes/*.js"], // Your routes
 };
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Allow frontend origin
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allow necessary HTTP methods
+    credentials: true, // Allow cookies/auth headers
+  })
+);
+app.options("*", cors()); // Enable pre-flight
+
+app.use(cookieParser());
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));

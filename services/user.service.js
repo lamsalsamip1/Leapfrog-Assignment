@@ -257,6 +257,25 @@ const UserService = {
       message: "Two-factor authentication disabled successfully.",
     };
   },
+
+  // edit user details (name)
+  async editUserDetails(userId, userFirstName, userLastName) {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      const error = new Error("User not found.");
+      error.status = 404; // 404 Not Found
+      throw error;
+    }
+
+    user.firstName = userFirstName;
+    user.lastName = userLastName;
+
+    await user.save();
+
+    return {
+      message: "User details updated successfully.",
+    };
+  },
 };
 
 export default UserService;

@@ -3,26 +3,71 @@ import Tabbar from '../components/Tabbar'
 import Navbar from '../components/Navbar'
 import InputField from '../components/InputField'
 import Button from '../components/Button'
+import useAuth from '../hooks/useAuth'
+import { useNavigate } from 'react-router-dom'
 
 const UserDetails = () => {
-    return (
-        <form className='flex flex-col gap-y-10 mt-2'>
-            <InputField label='First Name' placeholder='Samip' />
 
-            <InputField label='Last Name' placeholder='Lamsal' />
+    const navigate = useNavigate();
+    const User = useAuth();
+    const { firstName, lastName, email, updatedAt } = User || {};
+
+    const [userFirstName, setFirstName] = useState(firstName);
+    const [userLastName, setLastName] = useState(lastName);
+
+
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // make a fetch request to update the user details
+        try {
+            const response = await fetch("http://localhost:5000/api/user/edit", {
+                method: "PUT",
+                credentials: "include", // Allows cookies to be included
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userFirstName, userLastName }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                alert("User updated")
+                window.location.reload(false);
+
+            } else {
+                alert("Update failed !");
+
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+
+    }
+
+
+
+    return (
+        <form className='flex flex-col gap-y-10 mt-2' onSubmit={handleSubmit}>
+            <InputField label='First Name' placeholder={firstName} value={userFirstName} onChange={(e) => setFirstName(e.target.value)} />
+
+            <InputField label='Last Name' placeholder={lastName} value={userLastName} onChange={(e) => setLastName(e.target.value)} />
 
             <div className='flex gap-x-2 text-sm'>
                 <label>Email:</label>
-                <span className='text-[#8B8B8B]'>lamsalsamip@gmail.com</span>
+                <span className='text-[#8B8B8B]'>{email}</span>
             </div>
 
             <div className='flex gap-x-2 text-sm'>
                 <label>Last Updated:</label>
-                <span className='text-[#8B8B8B]'>05 Feb, 2025</span>
+                <span className='text-[#8B8B8B]'>{updatedAt ? updatedAt.slice(0, 10) : ""}</span>
             </div>
-            <div className='mt-4'>
-                <Button btnLabel='Save Changes' />
+            <div className='w-1/2'>
+                <button className="bg-[#6A7EFC] hover:bg-[#6aa2fc] text-xs font-bold text-white w-36 py-3 cursor-pointer rounded-2xl active:translate-y-1" type='submit'>Save Changes</button>
             </div>
+
+
 
 
         </form>
@@ -67,10 +112,11 @@ const Profile = () => {
     const handleTabChange = (newTab) => {
         setSelected(newTab);
     };
+    const User = useAuth();
     return (
         <div className='flex h-screen '>
 
-            <Navbar />
+            <Navbar user={User} />
 
             <div className='flex flex-col p-16 w-5/6 gap-y-10 '>
 
