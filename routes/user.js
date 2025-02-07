@@ -8,6 +8,7 @@ import {
   enable2FA,
   disable2FA,
   verifyOTP,
+  connectOTP,
   logout,
   editUserDetails,
   changePassword,
@@ -139,6 +140,32 @@ router.post("/login", loginUser);
  *         description: Failed to generate QR code.
  */
 router.post("/enable-2fa", authMiddleware, enable2FA);
+
+/**
+ * @swagger
+ * /api/user/connect-otp:
+ *  post:
+ *    summary: Connect two-factor authentication OTP
+ *    tags: [User]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *           type: object
+ *          properties:
+ *           otp:
+ *           type: string
+ *   responses:
+ *    200:
+ *     description: Two-factor authentication enabled successfully.
+ *   401:
+ *   description: Invalid OTP or Verification Failed
+ *  404:
+ *  description: User not found.
+ *
+ */
+router.post("/connect-otp", authMiddleware, connectOTP);
 
 /**
  * @swagger

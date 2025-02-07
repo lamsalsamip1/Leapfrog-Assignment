@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Tabbar from '../components/Tabbar'
 import Navbar from '../components/Navbar'
 import InputField from '../components/InputField'
 import Button from '../components/Button'
 import useAuth from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
+
 
 const UserDetails = () => {
 
@@ -76,24 +77,51 @@ const UserDetails = () => {
 
 const PasswordLogin = () => {
 
-    // const User = useAuth();
-    const [oldPassword, setOldPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [reNewPassword, setReNewPassword] = useState('');
+
+    const User = useAuth();
+    const { twoFAEnabled } = User || {};
+    console.log(twoFAEnabled)
+
+    const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        oldPassword: '',
+        newPassword: '',
+        reNewPassword: ''
+    });
+    const [error, setError] = useState('');
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => {
+            const updatedForm = { ...prevState, [name]: value };
+
+            if (name === 'newPassword' || name === 'reNewPassword') {
+                if (updatedForm.newPassword !== updatedForm.reNewPassword) {
+                    setError('Passwords do not match');
+                } else {
+                    setError('');
+                }
+            }
+            return updatedForm;
+        });
+    };
+
 
     const handlePwChange = async (e) => {
         e.preventDefault();
-        if (newPassword !== reNewPassword) {
+        if (formData.newPassword !== formData.reNewPassword) {
             alert("Passwords do not match");
             return;
         }
         // make a fetch request to update the user details
         try {
+            const { reNewPassword, ...dataToSend } = formData;
             const response = await fetch("http://localhost:5000/api/user/change-password", {
                 method: "PUT",
                 credentials: "include", // Allows cookies to be included
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ oldPassword, newPassword }),
+                body: JSON.stringify(dataToSend),
             });
 
             const data = await response.json();
@@ -112,30 +140,40 @@ const PasswordLogin = () => {
         }
     }
 
+    const handle2FA = (e) => {
+        e.preventDefault();
+        if (!twoFAEnabled) {
+            navigate('/enable2fa');
+        }
+        else {
+            navigate('/disable2fa');
+        }
+
+    }
     return (
         <div className='flex justify-between w-1/2'>
 
             <form onSubmit={handlePwChange} className='flex flex-col gap-y-10 mt-2'>
 
-                <InputField label='Current password' type='password' onChange={(e) => setOldPassword(e.target.value)} value={oldPassword} />
+                <InputField label='Current password' type='password' name="oldPassword" onChange={handleChange} value={formData.oldPassword} />
 
-                <InputField label='Enter new password' type='password' onChange={(e) => setNewPassword(e.target.value)} value={newPassword} />
+                <InputField label='Enter new password' type='password' name="newPassword" onChange={handleChange} value={formData.newPassword} />
 
-                <InputField label='Re-enter new password' type='password' onChange={(e) => setReNewPassword(e.target.value)} value={reNewPassword} />
-
+                <InputField label='Re-enter new password' type='password' name="reNewPassword" onChange={handleChange} value={formData.reNewPassword} />
+                {error && <p className='text-red-500 text-xs'>{error}</p>}
                 <Button type="submit" btnLabel='Change password' />
 
 
             </form>
-            <form action="" className='flex flex-col gap-y-10 mt-2'>
+            <form onSubmit={handle2FA} className='flex flex-col gap-y-10 mt-2'>
 
                 <div className='flex flex-col gap-y-1'>
                     <label className='text-xs'>Two Factor Authentication</label>
 
-                    <p className='font-bold border-1 border-gray-400 p-2 w-50 text-sm'>Disabled</p>
+                    <p className='font-bold border-1 border-gray-400 p-2 w-50 text-sm'>{twoFAEnabled ? "Enabled" : "Disabled"}</p>
                 </div>
 
-                <Button btnLabel='Enable 2FA' />
+                <Button btnLabel={twoFAEnabled ? "Disable 2FA" : "Enable 2FA"} type="submit" />
 
             </form>
         </div>

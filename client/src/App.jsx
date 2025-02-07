@@ -7,6 +7,9 @@ import Register from './pages/Register'
 import RegSuccess from './pages/RegSuccess'
 import Verified from './pages/Verified'
 import TwoFA from './pages/TwoFA'
+import Enable2FA from './pages/Enable2FA'
+import Disable2FA from './pages/Disable2FA'
+
 const App = () => {
 
 
@@ -20,6 +23,9 @@ const App = () => {
         <Route path="/regsuccess" element={<RegSuccess />} />
         <Route path="/verified" element={<Verified />} />
         <Route path="/twofa" element={<TwoFA />} />
+        <Route path="/enable2fa" element={<Enable2FA />} />
+        <Route path="/disable2fa" element={<Disable2FA />} />
+
       </Route>
     )
   );

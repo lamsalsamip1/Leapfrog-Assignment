@@ -181,6 +181,28 @@ export const verifyOTP = async (req, res, next) => {
   }
 };
 
+//connect OTP
+export const connectOTP = async (req, res, next) => {
+  const userId = req.user.id;
+  const { otp } = req.body;
+
+  try {
+    // Call the service to verify the OTP
+    const { token, message } = await UserService.connectOTP(userId, otp);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+    // Respond with the success message
+    res.json({
+      message,
+    });
+  } catch (error) {
+    next(error); // Pass the error to the errorHandler
+  }
+};
+
 export const logout = async (req, res) => {
   try {
     res.clearCookie("token", {

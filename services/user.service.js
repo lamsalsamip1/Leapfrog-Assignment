@@ -220,6 +220,40 @@ const UserService = {
     return { qrCodeImage };
   },
 
+  //connect otp
+  async connectOTP(userId, otp) {
+    console.log(otp);
+    const user = await User.findByPk(userId);
+    if (!user) {
+      const error = new Error("User not found.");
+      error.status = 404; // 404 Not Found
+      throw error;
+    }
+
+    const verified = speakeasy.totp.verify({
+      secret: user.twoFASecret,
+      encoding: "base32",
+      token: otp,
+      window: 1,
+    });
+
+    if (!verified) {
+      const error = new Error("Invalid OTP.");
+      error.status = 401; // 401 Unauthorized
+      throw error;
+    }
+
+    // Generate a JWT token
+    const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRY,
+    });
+
+    return {
+      token: token,
+      message: "Two-factor authentication enabled successfully.",
+    };
+  },
+
   // verify 2fa with temp token
   async verify2FA(tempToken, otp) {
     const decoded = jwt.verify(tempToken, process.env.JWT_SECRET);
