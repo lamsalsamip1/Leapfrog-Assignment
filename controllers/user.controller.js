@@ -74,12 +74,10 @@ export const verifyEmail = async (req, res, next) => {
 
   try {
     // Call the service to verify the email
-    const message = await UserService.verifyEmail(token);
+    await UserService.verifyEmail(token);
 
     // Respond with the success message
-    res.json({
-      message,
-    });
+    res.redirect("http://localhost:3000/verified");
   } catch (error) {
     next(error); // Pass the error to the errorHandler
   }

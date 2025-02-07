@@ -9,6 +9,7 @@ import sequelize from "./config/db.js";
 import authMiddleware from "./middleware/auth.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
+import cors from "cors";
 
 const port = process.env.PORT || 8000;
 
@@ -78,6 +79,8 @@ const swaggerOptions = {
   },
   apis: ["./routes/*.js"], // Your routes
 };
+
+app.use(cors());
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
