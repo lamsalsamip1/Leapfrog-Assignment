@@ -75,18 +75,55 @@ const UserDetails = () => {
 }
 
 const PasswordLogin = () => {
+
+    // const User = useAuth();
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [reNewPassword, setReNewPassword] = useState('');
+
+    const handlePwChange = async (e) => {
+        e.preventDefault();
+        if (newPassword !== reNewPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+        // make a fetch request to update the user details
+        try {
+            const response = await fetch("http://localhost:5000/api/user/change-password", {
+                method: "PUT",
+                credentials: "include", // Allows cookies to be included
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ oldPassword, newPassword }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                alert("Password updated")
+                window.location.reload(false);
+
+            } else {
+                alert("Update failed !");
+
+            }
+        }
+        catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
     return (
         <div className='flex justify-between w-1/2'>
 
-            <form action="" className='flex flex-col gap-y-10 mt-2'>
+            <form onSubmit={handlePwChange} className='flex flex-col gap-y-10 mt-2'>
 
-                <InputField label='Current password' type='password' />
+                <InputField label='Current password' type='password' onChange={(e) => setOldPassword(e.target.value)} value={oldPassword} />
 
-                <InputField label='Enter new password' type='password' />
+                <InputField label='Enter new password' type='password' onChange={(e) => setNewPassword(e.target.value)} value={newPassword} />
 
-                <InputField label='Re-enter new password' type='password' />
+                <InputField label='Re-enter new password' type='password' onChange={(e) => setReNewPassword(e.target.value)} value={reNewPassword} />
 
-                <Button btnLabel='Change password' />
+                <Button type="submit" btnLabel='Change password' />
 
 
             </form>

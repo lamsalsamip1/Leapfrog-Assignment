@@ -276,6 +276,37 @@ const UserService = {
       message: "User details updated successfully.",
     };
   },
+
+  //change password
+  async changePassword(userId, oldPassword, newPassword) {
+    console.log(oldPassword, newPassword);
+    const user = await User.scope("withPassword").findByPk(userId);
+    if (!user) {
+      const error = new Error("User not found.");
+      error.status = 404; // 404 Not Found
+      throw error;
+    }
+
+    // Compare the provided password with the hashed password
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isPasswordValid) {
+      const error = new Error("Invalid password.");
+      error.status = 401; // 401 Unauthorized
+      throw error;
+    }
+
+    // Hash the new password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    return {
+      message: "Password changed successfully.",
+    };
+  },
 };
 
 export default UserService;

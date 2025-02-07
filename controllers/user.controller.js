@@ -198,3 +198,25 @@ export const editUserDetails = async (req, res, next) => {
     next(error); // Pass the error to the errorHandler
   }
 };
+
+//change password
+export const changePassword = async (req, res, next) => {
+  const userId = req.user.id;
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+    // Call the service to change the password
+    const message = await UserService.changePassword(
+      userId,
+      oldPassword,
+      newPassword
+    );
+
+    // Respond with the success message
+    res.json({
+      message,
+    });
+  } catch (error) {
+    next(error); // Pass the error to the errorHandler
+  }
+};

@@ -10,6 +10,7 @@ import {
   verifyOTP,
   logout,
   editUserDetails,
+  changePassword,
 } from "../controllers/user.controller.js";
 import authMiddleware from "../middleware/auth.js";
 
@@ -237,5 +238,37 @@ router.post("/logout", logout);
  *         description: User not found.
  */
 router.put("/edit", authMiddleware, editUserDetails);
+
+// make swagger doc and api for change password
+//change password
+
+/**
+ * @swagger
+ * /api/user/change-password:
+ *  put:
+ *    summary: Change user password
+ *    tags: [User]
+ *    security:
+ *      - bearerAuth: []
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              oldPassword:
+ *                type: string
+ *              newPassword:
+ *                type: string
+ *    responses:
+ *      200:
+ *        description: Password changed successfully.
+ *      400:
+ *        description: User not found.
+ *      401:
+ *       description: Invalid password.
+ */
+router.put("/change-password", authMiddleware, changePassword);
 
 export default router;
