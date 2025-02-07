@@ -9,9 +9,9 @@ import Verified from './pages/Verified'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Login />} />
       <Route path="/profile" element={<Profile />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/notes" element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/regsuccess" element={<RegSuccess />} />
       <Route path="/verified" element={<Verified />} />

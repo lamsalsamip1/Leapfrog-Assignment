@@ -1,18 +1,55 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Searchbar from '../components/Searchbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import Tabbar from '../components/Tabbar'
 import Notecard from '../components/Notecard'
+
+
 const Home = () => {
+
+    const navigate = useNavigate();
+    const [User, setUser] = useState(null);
+    useEffect(() => {
+        const checkLogin = async () => {
+            try {
+                const response = await fetch("http://localhost:5000/api/user/profile", {
+                    method: "GET",
+                    credentials: "include", // Include cookies
+                });
+
+                if (!response.ok) {
+                    throw new Error("Not authenticated");
+                }
+
+                const data = await response.json();
+
+                setUser(data.user); // Store user details in state
+
+
+            } catch (error) {
+                console.error("User not logged in:", error);
+                navigate("/"); // Redirect to login if not authenticated
+            }
+        };
+
+        checkLogin();
+
+    }, [navigate]); // Runs only on mount
+
+    useEffect(() => {
+        console.log("Updated User State:", User);
+    }, [User]); // Runs every time User updates
+
     const noteCategories = ["All", "Work", "School", "Thoughts"];
 
     return (
         <>
             <div className='flex h-screen '>
 
-                <Navbar />
+                <Navbar user={User} />
 
                 <main className='flex flex-col h-full bg-[#F2F9FF] w-5/6  p-16 pb-4'>
 
@@ -37,6 +74,7 @@ const Home = () => {
                         <Notecard bgColor="#CCEABB" />
                     </div>
 
+                    {/* <p>{User && User.firstName}</p> */}
 
                 </main>
             </div>
