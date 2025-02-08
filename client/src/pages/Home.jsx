@@ -35,7 +35,7 @@ const Home = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ category_name }),
             });
-
+            console.log(response);
             const data = await response.json();
             console.log(data);
 

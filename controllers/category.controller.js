@@ -13,6 +13,10 @@ async function createCategory(req, res, next) {
     res.status(201).json(Category);
   } catch (error) {
     // If an error occurs, pass it to the error-handling middleware
+    if (error.name === "SequelizeUniqueConstraintError") {
+      error.message = "Category already exists";
+      error.status = 409;
+    }
     next(error);
   }
 }
