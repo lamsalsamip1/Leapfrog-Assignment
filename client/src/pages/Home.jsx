@@ -162,6 +162,23 @@ const Home = () => {
     const handleNoteUpdate = () => {
         fetchNotes(limit);
     }
+
+    //implement notes sorting
+    const handleSort = (sortOption) => {
+        const [sortType, order] = sortOption.split('-');
+        console.log("Sorting by", sortType, "in", order, "order");
+        const sortedNotes = [...notes].sort((a, b) => {
+            let comparison = 0;
+            if (sortType === "createdAt") {
+                comparison = new Date(a.createdAt) - new Date(b.createdAt);
+            } else {
+                comparison = new Date(a.updatedAt) - new Date(b.updatedAt);
+            }
+            return order === 'asc' ? comparison : -comparison;
+        });
+        setNotes(sortedNotes);
+    }
+
     const clearModal = () => {
 
         setSelectedCategory("");
@@ -196,22 +213,38 @@ const Home = () => {
                         <button className="text-[#303841] bg-green-300 text-sm px-2 h-8 ml-4 -mt-1 cursor-pointer hover:bg-green-200 rounded-lg" onClick={() => setModalType("add")}>+ Add Category</button>
                         <button className="text-[#303841] bg-red-300 px-2 text-sm h-8 ml-4 -mt-1 cursor-pointer hover:bg-red-200 rounded-lg" onClick={() => setModalType("delete")}>- Delete Category</button>
                     </div>
+                    <div className='flex gap-x-20 mt-4'>
+                        <div className='flex items-center gap-x-4'>
+                            <label htmlFor="noteCount" className="text-[#303841] font-semibold">Show Notes</label>
+                            <select
+                                id="noteCount"
+                                className="outline-none text-sm p-2 w-28 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
+                                onChange={(e) => handleLimitChange(e.target.value)}
+                            >
+                                <option value="5">5 Notes</option>
+                                <option value="10">10 Notes</option>
+                                <option value="20">20 Notes</option>
+                                <option value="50">50 Notes</option>
+                                <option value="100">100 Notes</option>
+                                <option value="1000">All Notes</option>
+                            </select>
+                        </div>
+                        <div className='flex items-center gap-x-4'>
+                            <label htmlFor="noteCount" className="text-[#303841] font-semibold">Sort By</label>
+                            <select
+                                id="noteCount"
+                                className="outline-none text-sm p-2 w-48 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
+                                onChange={(e) => handleSort(e.target.value)}
+                            >
+                                <option value="createdAt-asc">Creation Date (ASC)</option>
+                                <option value="createdAt-desc">Creation Date (DES)</option>
+                                <option value="updatedAt-asc">Last Updated (ASC)</option>
+                                <option value="updatedAt-desc">Last Updated (DES)</option>
 
-                    <div className='flex items-center gap-x-4'>
-                        <label htmlFor="noteCount" className="text-[#303841] font-semibold">Show Notes</label>
-                        <select
-                            id="noteCount"
-                            className="outline-none text-sm p-2 w-28 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
-                            onChange={(e) => handleLimitChange(e.target.value)}
-                        >
-                            <option value="5">5 Notes</option>
-                            <option value="10">10 Notes</option>
-                            <option value="20">20 Notes</option>
-                            <option value="50">50 Notes</option>
-                            <option value="100">100 Notes</option>
-                            <option value="1000">All Notes</option>
-                        </select>
+                            </select>
+                        </div>
                     </div>
+
 
 
                     <div className='flex grow-8 mt-8 overflow-auto h-46 gap-y-10 pr-6 items-center gap-x-12 flex-wrap custom-scrollbar'>
