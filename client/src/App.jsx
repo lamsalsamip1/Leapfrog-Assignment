@@ -1,4 +1,4 @@
-import { useState } from 'react'
+
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
 import Home from './pages/home'
 import Profile from './pages/Profile'

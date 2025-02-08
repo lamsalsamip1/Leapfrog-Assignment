@@ -24,7 +24,9 @@ const Notecard = ({ bgColor }) => {
     };
 
     return (
-        <div className='flex flex-col p-7 h-64 w-86 justify-between text-[#1E1E1E] rounded-2xl' style={{ backgroundColor: bgColor }}>
+        <div className='flex flex-col p-7 h-64 w-2/7 justify-between text-[#1E1E1E] rounded-2xl' style={{ backgroundColor: bgColor }}>
+
+            <h1 className='font-bold'>This is the note title </h1>
             {isEditing ? (
                 <textarea
                     ref={textareaRef}

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Searchbar from '../components/Searchbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,7 +9,7 @@ import useAuth from '../hooks/useAuth'
 import Modal from '../components/Modal'
 import Button from '../components/Button'
 import useCategories from '../hooks/useCategories';
-import { use } from 'react'
+
 
 
 const Home = () => {
@@ -106,7 +105,6 @@ const Home = () => {
         setSelectedCategory("");
         setCatMessage("");
         setCatError(false);
-        // window.location.reload(false);
         setModalType(null);
 
     }
@@ -119,7 +117,7 @@ const Home = () => {
 
                 <Navbar user={User} />
 
-                <main className='flex flex-col h-full bg-[#F2F9FF] w-5/6  p-16 pb-4'>
+                <main className='flex flex-col gap-y-2 h-full bg-[#F2F9FF] w-5/6  p-16 pb-4'>
 
                     <div className='flex flex-row grow-1 justify-between pr-4'>
                         <Searchbar />
@@ -129,21 +127,36 @@ const Home = () => {
                             <p className='text-[#303841] text-lg'>New Note</p>
                         </div>
                     </div>
-                    <div className='flex grow-2 gap-x-6 text-[#8B8B8B]'>
+                    <div className='flex grow-1 gap-x-6  text-[#8B8B8B]'>
 
                         <Tabbar categories={noteCategories} defaultVal="All" width={32} />
-                        <button className="text-[#303841] bg-green-300 text-sm px-2 h-8 ml-4 -mt-1 cursor-pointer hover:bg-green-200" onClick={() => setModalType("add")}>+ Add Category</button>
-                        <button className="text-[#303841] bg-red-300 px-2 text-sm h-8 ml-4 -mt-1 cursor-pointer hover:bg-red-200" onClick={() => setModalType("delete")}>- Delete Category</button>
+                        <button className="text-[#303841] bg-green-300 text-sm px-2 h-8 ml-4 -mt-1 cursor-pointer hover:bg-green-200 rounded-lg" onClick={() => setModalType("add")}>+ Add Category</button>
+                        <button className="text-[#303841] bg-red-300 px-2 text-sm h-8 ml-4 -mt-1 cursor-pointer hover:bg-red-200 rounded-lg" onClick={() => setModalType("delete")}>- Delete Category</button>
+                    </div>
+
+                    <div className='flex items-center gap-x-4'>
+                        <label htmlFor="noteCount" className="text-[#303841] font-semibold">Show Notes</label>
+                        <select
+                            id="noteCount"
+                            className="outline-none text-sm p-2 w-28 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
+                        >
+                            <option value="5">5 Notes</option>
+                            <option value="10">10 Notes</option>
+                            <option value="20">20 Notes</option>
+                        </select>
                     </div>
 
 
-                    <div className='flex grow-7 justify-between'>
+                    <div className='flex grow-8 mt-4 overflow-auto h-46 gap-y-10 pr-6 items-center justify-between flex-wrap custom-scrollbar'>
+
+                        <Notecard bgColor="#FFEAA7" />
+                        <Notecard bgColor="#FBA5A5" />
+                        <Notecard bgColor="#CCEABB" />
                         <Notecard bgColor="#FFEAA7" />
                         <Notecard bgColor="#FBA5A5" />
                         <Notecard bgColor="#CCEABB" />
                     </div>
 
-                    {/* <p>{User && User.firstName}</p> */}
 
                 </main>
             </div>
@@ -151,7 +164,7 @@ const Home = () => {
             {modalType == "add" &&
                 <Modal isOpen={true} onClose={() => clearModal()}>
                     <div className='flex flex-col p-7 gap-y-6 pr-2'>
-                        <h1 className='text-xl font-semibold text-[#6A7EFC]'>Add Category</h1>
+                        <h1 className='text-xl font-semibold text-[#6A7EFC] rounded-md'>Add Category</h1>
                         <form className='flex justify-between w-90 pr-4' onSubmit={addCategory}>
                             <input type="text" placeholder="Category Name" className='w-50 outline-none border-b-1 border-gray-300' />
                             <Button btnLabel={"Add"} width={20} type="submit" />
