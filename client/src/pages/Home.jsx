@@ -10,6 +10,7 @@ import Modal from '../components/Modal'
 import Button from '../components/Button'
 import { addCategory, deleteCategory, getAllCategories } from '../services/CategoryFunctions'
 import { getNotes, getNotesByCategory } from '../services/NoteFunctions'
+import Note from '../components/Note'
 
 const Home = () => {
 
@@ -35,6 +36,10 @@ const Home = () => {
     const [notesError, setNotesError] = useState(false);
 
     const [selectedCategory, setSelectedCategory] = useState("All");
+
+
+    const [addNote, setAddNote] = useState(false);
+
     const fetchCategories = async () => {
         try {
             const formattedCategories = await getAllCategories();
@@ -170,9 +175,9 @@ const Home = () => {
                     <div className='flex flex-row grow-1 justify-between pr-4'>
                         <Searchbar />
 
-                        <div className='flex gap-x-2'>
-                            <FontAwesomeIcon icon={faCirclePlus} className='text-[#303841] text-2xl cursor-pointer mt-1' />
-                            <p className='text-[#303841] text-lg'>New Note</p>
+                        <div className='flex gap-x-2  text-[#303841] cursor-pointer hover:text-[#4b4e52] active:translate-y-1' onClick={() => setAddNote(true)}>
+                            <FontAwesomeIcon icon={faCirclePlus} className=' text-2xl  mt-1' />
+                            <p className=' text-lg '>New Note</p>
                         </div>
                     </div>
                     <div className='flex grow-1 gap-x-6  text-[#8B8B8B]'>
@@ -259,6 +264,13 @@ const Home = () => {
                     </div>
                 </Modal>
             }
+
+            {addNote && (
+                <Note
+                    onClose={() => setAddNote(false)}
+                    categories={noteCategories}
+                />
+            )}
         </>
     )
 }
