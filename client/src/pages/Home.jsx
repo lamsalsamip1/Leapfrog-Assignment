@@ -9,8 +9,7 @@ import useAuth from '../hooks/useAuth'
 import Modal from '../components/Modal'
 import Button from '../components/Button'
 import useCategories from '../hooks/useCategories';
-
-
+import { addCategory, deleteCategory } from '../services/CategoryFunctions'
 
 const Home = () => {
 
@@ -35,71 +34,47 @@ const Home = () => {
 
     const [selectedCategory, setSelectedCategory] = useState("");
 
-    const addCategory = async (e) => {
+    // In your component functions
+    const addCategoryHandler = async (e) => {
         e.preventDefault();
         const category_name = e.target[0].value;
 
-        try {
-            const response = await fetch("http://localhost:5000/api/category", {
-                method: "POST",
-                credentials: "include", // Allows cookies to be included
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ category_name }),
-            });
-            console.log(response);
-            const data = await response.json();
-            console.log(data);
+        const result = await addCategory(category_name);
 
-            if (response.ok) {
-                setCatMessage("Category added successfully");
-                setCatError(false);
-                const cat_entry = { category_id: data.category_id, category_name: data.category_name };
-                setNoteCategories((prevCategories) => [
-                    ...prevCategories,
-                    cat_entry, // Assuming 'newCategory' is the added category
-                ]);
-
-            } else {
-                setCatMessage(data.msg);
-                setCatError(true);
-            }
-        } catch (error) {
-            console.error("Error adding category:", error);
-            setCatMessage("Error adding category");
+        if (result.success) {
+            setCatMessage("Category added successfully");
+            setCatError(false);
+            const cat_entry = { category_id: result.data.category_id, category_name: result.data.category_name };
+            setNoteCategories((prevCategories) => [
+                ...prevCategories,
+                cat_entry,
+            ]);
+            console.log(noteCategories);
+        } else {
+            setCatMessage(result.message);
             setCatError(true);
         }
-    }
+    };
 
-    const deleteCategory = async (e) => {
+    const deleteCategoryHandler = async (e) => {
         e.preventDefault();
-        const category_id = noteCategories.find((category) => category.category_name === selectedCategory).category_id;
-        try {
-            const response = await fetch(`http://localhost:5000/api/category/${category_id}`, {
-                method: "DELETE",
-                credentials: "include", // Allows cookies to be included
-                headers: { "Content-Type": "application/json" },
-            });
-            console.log(response);
-            if (response.ok) {
-                setCatMessage("Category deleted successfully");
-                setCatError(false);
-                setNoteCategories((prevCategories) =>
-                    prevCategories.filter(
-                        (category) => category.category_id !== category_id
-                    )
-                );
-            } else {
-                const data = await response.json();
-                setCatMessage(data.msg);
-                setCatError(true);
-            }
-        } catch (error) {
-            console.error("Error deleting category:", error);
-            setCatMessage("Error deleting category");
+        const category_id = noteCategories.find(category => category.category_name === selectedCategory).category_id;
+        const result = await deleteCategory(category_id);
+
+        if (result.success) {
+            setCatMessage("Category deleted successfully");
+            setCatError(false);
+            setNoteCategories((prevCategories) =>
+                prevCategories.filter(
+                    (category) => category.category_id !== category_id
+                )
+            );
+
+        } else {
+            setCatMessage(result.message);
             setCatError(true);
         }
-    }
-
+    };
     const clearModal = () => {
 
         setSelectedCategory("");
@@ -165,9 +140,10 @@ const Home = () => {
                 <Modal isOpen={true} onClose={() => clearModal()}>
                     <div className='flex flex-col p-7 gap-y-6 pr-2'>
                         <h1 className='text-xl font-semibold text-[#6A7EFC] rounded-md'>Add Category</h1>
-                        <form className='flex justify-between w-90 pr-4' onSubmit={addCategory}>
+                        <form className='flex justify-between w-90 pr-4' onSubmit={addCategoryHandler}>
                             <input type="text" placeholder="Category Name" className='w-50 outline-none border-b-1 border-gray-300' />
                             <Button btnLabel={"Add"} width={20} type="submit" />
+                            {/* <button className='bg-[#6A7EFC] text-white rounded-lg w-20 text-sm hover:bg-[#6aa2fc] py-3 cursor-pointer font-semibold' type="submit"> Add</button> */}
                         </form>
 
                         {catMessage && <p className={`${catError ? 'text-red-400' : 'text-green-600 '} text-xs `}>{catMessage}</p>}
@@ -179,7 +155,7 @@ const Home = () => {
                 <Modal isOpen={true} onClose={() => clearModal()}>
                     <div className='flex flex-col p-7 gap-y-6 pr-2'>
                         <h1 className='text-xl font-semibold text-[#6A7EFC]'>Delete Category</h1>
-                        <form className='flex justify-between w-90 pr-4' onSubmit={deleteCategory}>
+                        <form className='flex justify-between w-90 pr-4' onSubmit={deleteCategoryHandler}>
                             <select
                                 className="w-50 border-b-1 border-gray-300 outline-none"
                                 value={selectedCategory}
