@@ -8,33 +8,65 @@ import Notecard from '../components/Notecard'
 import useAuth from '../hooks/useAuth'
 import Modal from '../components/Modal'
 import Button from '../components/Button'
-import useCategories from '../hooks/useCategories';
-import { addCategory, deleteCategory } from '../services/CategoryFunctions'
+import { addCategory, deleteCategory, getAllCategories } from '../services/CategoryFunctions'
+import { getNotes } from '../services/NoteFunctions'
 
 const Home = () => {
 
-    //Fetch user details from useAuth hook
+    //Fetch user details from useAuth hook, also redirects to login page if not authenticated
     const User = useAuth();
-
-    // Fetch categories initially from useCategories hook
-    const initialCategories = useCategories();
 
     // State for categories, initially fetched from the hook
     const [noteCategories, setNoteCategories] = useState([]);
+    const [notes, setNotes] = useState([]);
 
     // Update categories state when fetched
     useEffect(() => {
-        setNoteCategories(initialCategories);
-    }, [initialCategories]); // This will run when initialCategories is updated
+        fetchCategories();
+        fetchNotes(5);
 
-    const [modalOpen, setModalOpen] = useState(false);
+    }, []);
+
+
     const [modalType, setModalType] = useState(null); // can be add delete null
     const [catMessage, setCatMessage] = useState("");
     const [catError, setCatError] = useState(false);
+    const [notesError, setNotesError] = useState(false);
 
     const [selectedCategory, setSelectedCategory] = useState("");
+    const fetchCategories = async () => {
+        try {
+            const formattedCategories = await getAllCategories();
+            setNoteCategories([
+                { category_id: 0, category_name: "All" },
+                ...formattedCategories,
+            ]);
+        }
+        catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
 
-    // In your component functions
+    //fetch notes based on limit
+    const fetchNotes = async (limit) => {
+        try {
+            console.log("Fetching notes");
+            const notes = await getNotes(limit);
+            if (notes.success) {
+                setNotes(notes.data);
+            }
+            else {
+                throw new Error(notes.message);
+            }
+
+        }
+        catch (error) {
+            console.error("Error fetching notes:", error);
+            setNotesError(error.message);
+        };
+    }
+
+    // handle category functions and call services to make API calls
     const addCategoryHandler = async (e) => {
         e.preventDefault();
         const category_name = e.target[0].value;
@@ -84,7 +116,7 @@ const Home = () => {
 
     }
 
-
+    const colors = ["#FFEAA7", "#FBA5A5", "#CCEABB"];
 
     return (
         <>
@@ -114,6 +146,7 @@ const Home = () => {
                         <select
                             id="noteCount"
                             className="outline-none text-sm p-2 w-28 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
+                            onChange={(e) => fetchNotes(e.target.value)}
                         >
                             <option value="5">5 Notes</option>
                             <option value="10">10 Notes</option>
@@ -122,15 +155,20 @@ const Home = () => {
                     </div>
 
 
-                    <div className='flex grow-8 mt-4 overflow-auto h-46 gap-y-10 pr-6 items-center justify-between flex-wrap custom-scrollbar'>
+                    <div className='flex grow-8 mt-8 overflow-auto h-46 gap-y-10 pr-6 items-center gap-x-12 flex-wrap custom-scrollbar'>
 
-                        <Notecard bgColor="#FFEAA7" />
+                        {/* <Notecard bgColor="#FFEAA7" />
                         <Notecard bgColor="#FBA5A5" />
                         <Notecard bgColor="#CCEABB" />
                         <Notecard bgColor="#FFEAA7" />
                         <Notecard bgColor="#FBA5A5" />
-                        <Notecard bgColor="#CCEABB" />
+                        <Notecard bgColor="#CCEABB" /> */}
+                        {notes.map((note, index) => (
+                            <Notecard key={index} bgColor={colors[index % colors.length]} note={note} />
+                        ))}
                     </div>
+
+                    {/* Add an error field on top middle of screen */}
 
 
                 </main>
@@ -173,6 +211,16 @@ const Home = () => {
                         </form>
 
                         {catMessage && <p className={`${catError ? 'text-red-400' : 'text-green-600 '} text-xs `}>{catMessage}</p>}
+                    </div>
+                </Modal>
+            }
+
+            {notesError &&
+                <Modal isOpen={true} onClose={() => clearModal()}>
+                    <div className='flex flex-col justify-between w-60 p-7 pr-2'>
+                        <h1 className='text-[#6A7EFC] font-bold text-xl'>Error </h1>
+                        <p className='text-sm text-red-600'>Could not fetch notes</p>
+                        <p className='text-sm '>Message: {notesError}</p>
                     </div>
                 </Modal>
             }

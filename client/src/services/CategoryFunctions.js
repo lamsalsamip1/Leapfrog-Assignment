@@ -41,3 +41,19 @@ export const deleteCategory = async (category_id) => {
     return { success: false, message: "Error deleting category" };
   }
 };
+
+export const getAllCategories = async () => {
+  const response = await fetch("http://localhost:5000/api/category", {
+    method: "GET",
+    credentials: "include", // Allows cookies to be included
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await response.json();
+  console.log(data);
+  // Map the response to maintain both id and name
+  const formattedCategories = data.map((category) => ({
+    category_id: category.category_id,
+    category_name: category.category_name,
+  }));
+  return formattedCategories;
+};

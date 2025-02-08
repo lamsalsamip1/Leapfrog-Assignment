@@ -40,8 +40,9 @@ const NoteService = {
   },
 
   // Get all notes
-  async getAllNotes(user_id) {
+  async getAllNotes(user_id, limit) {
     console.log("user_id", user_id);
+    console.log(limit);
     return await Note.findAll({
       where: { user_id: user_id }, // Only select notes that belong to the user
       include: {
@@ -50,6 +51,7 @@ const NoteService = {
         through: { attributes: [] }, // Exclude the junction table columns (optional)
       },
       order: [["note_id", "ASC"]],
+      limit: limit ? parseInt(limit) : undefined,
     });
   },
 

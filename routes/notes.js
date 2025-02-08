@@ -11,12 +11,19 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/notes:
+ * /api/notes/filter/{limit}:
  *   get:
  *     summary: Get all notes
  *     tags: [Notes]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The number of notes to return
  *     responses:
  *       200:
  *         description: A list of notes
@@ -31,7 +38,7 @@ const router = express.Router();
  *       500:
  *         description: Internal server error.
  */
-router.get("/", getAllNotes);
+router.get("/filter/:limit", getAllNotes);
 
 /**
  * @swagger

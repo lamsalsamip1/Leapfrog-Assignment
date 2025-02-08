@@ -21,7 +21,11 @@ async function createNote(req, res, next) {
 async function getAllNotes(req, res, next) {
   try {
     const user_id = req.user.id;
-    const notes = await NoteService.getAllNotes(user_id);
+    const { limit } = req.params;
+    console.log(req.params);
+    // only get the first limit number of notes
+    const notes = await NoteService.getAllNotes(user_id, limit);
+    // const notes = await NoteService.getAllNotes(user_id);
     res.status(200).json(notes);
   } catch (error) {
     next(error);

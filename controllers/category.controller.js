@@ -3,6 +3,12 @@ import CategoryService from "../services/category.service.js";
 async function createCategory(req, res, next) {
   try {
     const { category_name } = req.body;
+    //if name is empty return error
+    if (!category_name) {
+      const error = new Error("Category name is required");
+      error.status = 400;
+      return next(error);
+    }
     const user_id = req.user.id;
     const Category = await CategoryService.createCategory(
       category_name,
