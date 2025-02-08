@@ -41,6 +41,8 @@ const Home = () => {
     const [addNote, setAddNote] = useState(false);
     const [editNote, setEditNote] = useState("");
 
+    const [searchQuery, setSearchQuery] = useState("");
+
     const fetchCategories = async () => {
         try {
             const formattedCategories = await getAllCategories();
@@ -163,6 +165,15 @@ const Home = () => {
         fetchNotes(limit);
     }
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const filteredNotes = notes.filter(note =>
+        note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.content.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     //implement notes sorting
     const handleSort = (sortOption) => {
         const [sortType, order] = sortOption.split('-');
@@ -200,7 +211,7 @@ const Home = () => {
                 <main className='flex flex-col gap-y-2 h-full bg-[#F2F9FF] w-5/6  p-16 pb-4'>
 
                     <div className='flex flex-row grow-1 justify-between pr-4'>
-                        <Searchbar />
+                        <Searchbar value={searchQuery} onChange={handleSearchChange} />
 
                         <div className='flex gap-x-2  text-[#303841] cursor-pointer hover:text-[#4b4e52] active:translate-y-1' onClick={() => setAddNote(true)}>
                             <FontAwesomeIcon icon={faCirclePlus} className=' text-2xl  mt-1' />
@@ -249,7 +260,7 @@ const Home = () => {
 
                     <div className='flex grow-8 mt-8 overflow-auto h-46 gap-y-10 pr-6 items-center gap-x-12 flex-wrap custom-scrollbar'>
 
-                        {notes.map((note, index) => (
+                        {filteredNotes.map((note, index) => (
                             <Notecard key={index} bgColor={colors[index % colors.length]} note={note} onEdit={handleEditIconClick} />
                         ))}
                     </div>
