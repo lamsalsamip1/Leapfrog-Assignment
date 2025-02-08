@@ -21,6 +21,7 @@ async function getAllCategories(req, res, next) {
   try {
     const user_id = req.user.id;
     const Categories = await CategoryService.getAllCategories(user_id);
+
     res.status(200).json(Categories);
   } catch (error) {
     next(error);

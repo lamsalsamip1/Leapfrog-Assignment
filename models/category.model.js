@@ -26,6 +26,12 @@ const Category = sequelize.define(
   },
   {
     timestamps: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ["user_id", "category_name"],
+      },
+    ],
   }
 );
 

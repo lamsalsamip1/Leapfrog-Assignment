@@ -182,30 +182,27 @@ const PasswordLogin = () => {
 
 
 const Profile = () => {
-
     const [selected, setSelected] = useState('Basic Info');
     const handleTabChange = (newTab) => {
         setSelected(newTab);
     };
     const User = useAuth();
+
+    const categories = [
+        { category_id: 1, category_name: "Basic Info" },
+        { category_id: 2, category_name: "Password & Login" }
+    ];
+
     return (
         <div className='flex h-screen '>
-
             <Navbar user={User} />
-
             <div className='flex flex-col p-16 w-5/6 gap-y-10 '>
-
                 <h1 className='text-xl font-semibold' >Settings</h1>
                 <div className='flex gap-x-16 text-[#8B8B8B]'>
-                    <Tabbar categories={["Basic Info", "Password & Login"]} defaultVal="Basic Info" width={40} onTabChange={handleTabChange} />
+                    <Tabbar categories={categories} defaultVal="Basic Info" width={40} onTabChange={handleTabChange} />
                 </div>
-
                 {selected === 'Basic Info' ? <UserDetails /> : <PasswordLogin />}
-
-
-
             </div>
-
         </div>
     )
 }

@@ -8,9 +8,9 @@ const Navbar = ({ user = null }) => {
     const { firstName, lastName, email } = user || {};  // Optional chaining in case user is null
     const navigate = useNavigate()
 
-    useEffect(() => {
-        console.log(user)
-    }, [user])
+    // useEffect(() => {
+    //     console.log(user)
+    // }, [user])
     // console.log(user.firstName)
 
     const handleLogout = async (e) => {

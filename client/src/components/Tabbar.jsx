@@ -6,9 +6,9 @@ const Tabbar = ({ categories, defaultVal, width = 20, onTabChange }) => {
     const [activeTab, setActiveTab] = useState(defaultVal);
 
     const handleTabClick = (category) => {
-        setActiveTab(category);
+        setActiveTab(category.category_name);
         if (onTabChange) {
-            onTabChange(category);
+            onTabChange(category.category_name);
         }
     };
 
@@ -17,11 +17,11 @@ const Tabbar = ({ categories, defaultVal, width = 20, onTabChange }) => {
             {
                 categories.map((category) => (
                     <label
-                        key={category}
-                        className={`cursor-pointer font-semibold text-sm uppercase h-8 w-${width} border-b-2 pt-1   ${activeTab === category ? "text-[#6A7EFC] border-[#6A7EFC]" : "border-transparent"}`}
+                        key={category.category_id}
+                        className={`cursor-pointer font-semibold text-sm uppercase h-8 w-${width} border-b-2 pt-1 ${activeTab === category.category_name ? "text-[#6A7EFC] border-[#6A7EFC]" : "border-transparent"}`}
                         onClick={() => handleTabClick(category)}
                     >
-                        {category}
+                        {category.category_name}
                     </label>
                 ))
             }
