@@ -50,6 +50,26 @@ async function getNoteById(req, res, next) {
   }
 }
 
+//get note by category
+async function getNoteByCategory(req, res, next) {
+  try {
+    console.log(req.params);
+    const { id } = req.params;
+    const user_id = req.user.id;
+    const notes = await NoteService.getNoteByCategory(id, user_id);
+
+    if (!notes) {
+      const error = new Error(`Note with category id ${category_id} not found`);
+      error.status = 404;
+      return next(error); // Pass the error to the next middleware
+    }
+
+    res.status(200).json(notes);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function updateNote(req, res, next) {
   try {
     const { id } = req.params;
@@ -108,4 +128,11 @@ async function deleteNote(req, res, next) {
   }
 }
 
-export { createNote, getAllNotes, getNoteById, updateNote, deleteNote };
+export {
+  createNote,
+  getAllNotes,
+  getNoteById,
+  updateNote,
+  deleteNote,
+  getNoteByCategory,
+};

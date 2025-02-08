@@ -2,7 +2,7 @@ import express from "express";
 import {
   createNote,
   getAllNotes,
-  getNoteById,
+  getNoteByCategory,
   updateNote,
   deleteNote,
 } from "../controllers/notes.controller.js";
@@ -42,9 +42,9 @@ router.get("/filter/:limit", getAllNotes);
 
 /**
  * @swagger
- * /api/notes/{id}:
+ * /api/notes/catfilter/{id}:
  *   get:
- *     summary: Get a single note by ID
+ *     summary: Get notes by category ID
  *     tags: [Notes]
  *     security:
  *       - bearerAuth: []
@@ -54,10 +54,10 @@ router.get("/filter/:limit", getAllNotes);
  *         schema:
  *           type: integer
  *         required: true
- *         description: The note ID
+ *         description: The category ID
  *     responses:
  *       200:
- *         description: A single note
+ *         description: A list of notes belonging to the category
  *         content:
  *           application/json:
  *             schema:
@@ -65,11 +65,11 @@ router.get("/filter/:limit", getAllNotes);
  *       401:
  *         description: Access denied. User not authorized.
  *       404:
- *         description: Note not found.
+ *         description: Note with category id not found.
  *       500:
  *         description: Internal server error.
  */
-router.get("/:id", getNoteById);
+router.get("/catfilter/:id", getNoteByCategory);
 
 /**
  * @swagger

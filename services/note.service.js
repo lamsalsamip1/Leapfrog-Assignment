@@ -67,6 +67,20 @@ const NoteService = {
     });
   },
 
+  //get note by category
+  async getNoteByCategory(id, user_id) {
+    console.log("cateogry id", id);
+    return await Note.findAll({
+      where: { user_id: user_id }, // Only select notes that belong to the user
+      include: {
+        model: Category, // Include the Category model
+        attributes: ["category_name"], // Only select the 'name' attribute from the Category model
+        through: { attributes: [] }, // Exclude the junction table columns (optional)
+        where: { category_id: id },
+      },
+    });
+  },
+
   // Update a note
   async updateNote(note_id, title, content, categoryIDs, user_id) {
     const note = await Note.findByPk(note_id, {
