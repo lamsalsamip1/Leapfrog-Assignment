@@ -50,6 +50,29 @@ export const addNote = async (note) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(note),
   });
+  console.log(response);
+  if (response.ok) {
+    console.log("response ok");
+    const data = await response.json();
+    return { success: true, data: data };
+  } else {
+    const data = await response.json();
+    return { success: false, message: data.msg };
+  }
+};
+
+//edit existing note
+export const editNote = async (note) => {
+  console.log("hi");
+  const response = await fetch(
+    `http://localhost:5000/api/notes/${note.note_id}`,
+    {
+      method: "PUT",
+      credentials: "include", // Allows cookies to be included
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(note),
+    }
+  );
 
   if (response.ok) {
     const data = await response.json();

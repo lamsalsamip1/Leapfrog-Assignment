@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../components/Button'; // Assuming Button component is already available
-import { addNote } from '../services/NoteFunctions';
+import { addNote, editNote } from '../services/NoteFunctions';
 
 
 
-const Note = ({ onClose, categories }) => {
+const Note = ({ onClose, categories, existingNote, onNoteCallback }) => {
 
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [title, setTitle] = useState('');
@@ -12,6 +12,14 @@ const Note = ({ onClose, categories }) => {
 
     const [message, setMessage] = useState('');
     const [error, setError] = useState(false);
+
+    useEffect(() => {
+        if (existingNote) {
+            setTitle(existingNote.title);
+            setContent(existingNote.content);
+            setSelectedCategories(existingNote.Categories.map(category => category.category_name));
+        }
+    }, [existingNote]);
 
     const handleCategoryChange = (categoryName) => {
         setSelectedCategories((prevSelectedCategories) =>
@@ -36,27 +44,56 @@ const Note = ({ onClose, categories }) => {
             .map((category) => category.category_id);
 
         try {
-            const response = await addNote({
-                title: title,
-                content: content,
-                categoryIDs: category_ids
-            });
+            let response;
+            if (existingNote) {
+                response = await editNote({
+                    note_id: existingNote.note_id,
+                    title: title,
+                    content: content,
+                    categoryIDs: category_ids
+                });
 
-            if (response.success) {
-                setMessage('Note added successfully');
-                setError(false);
-                setTitle('');
-                setContent('');
-                setSelectedCategories([]);
+                if (response.success) {
+                    setMessage("Note updated successfully");
+                    setError(false);
+                    setTitle(title);
+                    setContent(content);
+                    setSelectedCategories(selectedCategories);
+                    console.log("success");
+                    onNoteCallback();
+
+
+                }
+                else {
+                    setMessage(response.message);
+                    setError(true);
+                }
             }
             else {
-                setMessage(response.message);
-                setError(true);
+                response = await addNote({
+                    title: title,
+                    content: content,
+                    categoryIDs: category_ids
+                });
+                if (response.success) {
+                    setMessage("Note added successfully");
+                    setError(false);
+                    setTitle('');
+                    setContent('');
+                    setSelectedCategories([]);
+                    onNoteCallback();
+                }
+                else {
+                    setMessage(response.message);
+                    setError(true);
+                }
             }
+
         }
-        catch {
-            setMessage('Failed to add note');
+        catch (error) {
+            setMessage('Operation failed');
             setError(true);
+            console.log(error);
         }
     };
 
@@ -67,7 +104,7 @@ const Note = ({ onClose, categories }) => {
         <div className="fixed inset-0 bg-black/90 flex justify-center items-center">
             <div className="bg-white w-3/4 p-6 rounded-lg shadow-lg">
                 <div className='flex justify-between items-center'>
-                    <h2 className="text-2xl font-bold text-[#6A7EFC] mb-4">Add New Note</h2>
+                    <h2 className="text-2xl font-bold text-[#6A7EFC] mb-4">{existingNote ? 'Edit Note' : 'Add New Note'}</h2>
                     <p className={!error ? 'text-green-600' : 'text-red-500'}>{message}</p>
                 </div>
 

@@ -39,6 +39,7 @@ const Home = () => {
 
 
     const [addNote, setAddNote] = useState(false);
+    const [editNote, setEditNote] = useState("");
 
     const fetchCategories = async () => {
         try {
@@ -152,6 +153,15 @@ const Home = () => {
             setCatError(true);
         }
     };
+
+    const handleEditIconClick = (note) => {
+        console.log("Edit icon clicked", note);
+        setEditNote(note);
+    }
+
+    const handleNoteUpdate = () => {
+        fetchNotes(limit);
+    }
     const clearModal = () => {
 
         setSelectedCategory("");
@@ -204,7 +214,7 @@ const Home = () => {
                     <div className='flex grow-8 mt-8 overflow-auto h-46 gap-y-10 pr-6 items-center gap-x-12 flex-wrap custom-scrollbar'>
 
                         {notes.map((note, index) => (
-                            <Notecard key={index} bgColor={colors[index % colors.length]} note={note} />
+                            <Notecard key={index} bgColor={colors[index % colors.length]} note={note} onEdit={handleEditIconClick} />
                         ))}
                     </div>
 
@@ -269,8 +279,23 @@ const Home = () => {
                 <Note
                     onClose={() => setAddNote(false)}
                     categories={noteCategories}
+                    onNoteCallback={handleNoteUpdate}
                 />
             )}
+
+            {
+                editNote && (
+                    <Note
+                        onClose={() => setEditNote(false)}
+                        categories={noteCategories}
+                        existingNote={editNote}
+                        onNoteCallback={handleNoteUpdate}
+                    />
+                )
+
+            }
+
+
         </>
     )
 }
