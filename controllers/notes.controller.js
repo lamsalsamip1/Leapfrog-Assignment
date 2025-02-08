@@ -107,6 +107,7 @@ async function deleteNote(req, res, next) {
   try {
     const { id } = req.params;
     const user_id = req.user.id;
+    console.log("note_id controller", id);
     const note = await NoteService.getNoteById(id, user_id);
     if (!note) {
       const error = new Error(`Note with id ${id} not found`);
@@ -123,7 +124,7 @@ async function deleteNote(req, res, next) {
 
     await NoteService.deleteNote(id, user_id);
 
-    res.status(204).send(); // Send a 204 No Content response for successful deletion
+    res.status(200).json("Successful deletion"); // Send a 204 No Content response for successful deletion
   } catch (error) {
     next(error);
   }

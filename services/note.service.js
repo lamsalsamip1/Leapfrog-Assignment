@@ -57,6 +57,7 @@ const NoteService = {
 
   // Get a single note by ID
   async getNoteById(note_id, user_id) {
+    console.log("note_id", note_id);
     return await Note.findByPk(note_id, {
       where: { user_id: user_id }, // Only select notes that belong to the user
       include: {
@@ -99,6 +100,7 @@ const NoteService = {
 
   // Delete a note
   async deleteNote(note_id, user_id) {
+    console.log("note_id", note_id);
     const note = await Note.findByPk(
       note_id,
       { where: { user_id: user_id } } // Only select notes that belong to the user

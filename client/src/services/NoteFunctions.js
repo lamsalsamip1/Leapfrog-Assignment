@@ -82,3 +82,20 @@ export const editNote = async (note) => {
     return { success: false, message: data.msg };
   }
 };
+
+//delete note
+export const deleteNote = async (note_id) => {
+  const response = await fetch(`http://localhost:5000/api/notes/${note_id}`, {
+    method: "DELETE",
+    credentials: "include", // Allows cookies to be included
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return { success: true, data: data };
+  } else {
+    const data = await response.json();
+    return { success: false, message: data.msg };
+  }
+};

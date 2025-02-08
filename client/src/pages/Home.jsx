@@ -207,6 +207,9 @@ const Home = () => {
                             <option value="5">5 Notes</option>
                             <option value="10">10 Notes</option>
                             <option value="20">20 Notes</option>
+                            <option value="50">50 Notes</option>
+                            <option value="100">100 Notes</option>
+                            <option value="1000">All Notes</option>
                         </select>
                     </div>
 

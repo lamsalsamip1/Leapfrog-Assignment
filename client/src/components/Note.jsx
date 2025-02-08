@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../components/Button'; // Assuming Button component is already available
-import { addNote, editNote } from '../services/NoteFunctions';
+import { addNote, editNote, deleteNote } from '../services/NoteFunctions';
 
 
 
@@ -97,8 +97,36 @@ const Note = ({ onClose, categories, existingNote, onNoteCallback }) => {
         }
     };
 
+    //delete note
+    const handleDelete = async () => {
+        console.log(existingNote.note_id);
+        try {
+            const response = await deleteNote(existingNote.note_id);
 
+            if (response.success) {
+                setMessage("Note deleted successfully");
+                setError(false);
+                setContent('');
+                setTitle('');
+                setSelectedCategories([]);
+                onNoteCallback();
+                //close after 2 seconds
+                setTimeout(() => {
+                    onClose();
+                }, 2000);
 
+            }
+            else {
+                setMessage(response.message);
+                setError(true);
+            }
+        }
+        catch (error) {
+            setMessage('Deletion failed');
+            setError(true);
+            console.log(error);
+        }
+    };
 
     return (
         <div className="fixed inset-0 bg-black/90 flex justify-center items-center">
@@ -150,6 +178,10 @@ const Note = ({ onClose, categories, existingNote, onNoteCallback }) => {
                     <div className="flex justify-between mt-4">
                         <div onClick={onClose} >
                             <Button btnLabel="Close" width={20} />
+                        </div>
+                        <div onClick={(e) => { e.preventDefault(); handleDelete() }}>
+                            {existingNote && <button className='bg-red-500 cursor-pointer py-3 px-4 text-white rounded-lg text-xs font-bold'> Delete</button>}
+
                         </div>
                         <div onClick={(e) => { e.preventDefault(); handleSave() }}>
                             <Button btnLabel="Save" width={20} />
