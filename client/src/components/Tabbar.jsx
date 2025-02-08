@@ -8,7 +8,7 @@ const Tabbar = ({ categories, defaultVal, width = 20, onTabChange }) => {
     const handleTabClick = (category) => {
         setActiveTab(category.category_name);
         if (onTabChange) {
-            onTabChange(category.category_name);
+            onTabChange(category);
         }
     };
 

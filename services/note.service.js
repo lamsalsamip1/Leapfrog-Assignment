@@ -68,7 +68,7 @@ const NoteService = {
   },
 
   //get note by category
-  async getNoteByCategory(id, user_id) {
+  async getNoteByCategory(id, user_id, limit) {
     console.log("cateogry id", id);
     return await Note.findAll({
       where: { user_id: user_id }, // Only select notes that belong to the user
@@ -78,6 +78,8 @@ const NoteService = {
         through: { attributes: [] }, // Exclude the junction table columns (optional)
         where: { category_id: id },
       },
+      order: [["note_id", "ASC"]],
+      limit: limit ? parseInt(limit) : undefined,
     });
   },
 

@@ -55,8 +55,9 @@ async function getNoteByCategory(req, res, next) {
   try {
     console.log(req.params);
     const { id } = req.params;
+    const limit = req.query.limit;
     const user_id = req.user.id;
-    const notes = await NoteService.getNoteByCategory(id, user_id);
+    const notes = await NoteService.getNoteByCategory(id, user_id, limit);
 
     if (!notes) {
       const error = new Error(`Note with category id ${category_id} not found`);

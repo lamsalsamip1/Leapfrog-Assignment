@@ -40,11 +40,13 @@ const router = express.Router();
  */
 router.get("/filter/:limit", getAllNotes);
 
+// ...existing code...
+
 /**
  * @swagger
  * /api/notes/catfilter/{id}:
  *   get:
- *     summary: Get notes by category ID
+ *     summary: Get notes by category ID with a limit
  *     tags: [Notes]
  *     security:
  *       - bearerAuth: []
@@ -55,6 +57,12 @@ router.get("/filter/:limit", getAllNotes);
  *           type: integer
  *         required: true
  *         description: The category ID
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: The number of notes to return
  *     responses:
  *       200:
  *         description: A list of notes belonging to the category
@@ -70,6 +78,8 @@ router.get("/filter/:limit", getAllNotes);
  *         description: Internal server error.
  */
 router.get("/catfilter/:id", getNoteByCategory);
+
+// ...existing code...
 
 /**
  * @swagger

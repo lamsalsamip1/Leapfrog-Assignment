@@ -9,7 +9,7 @@ import useAuth from '../hooks/useAuth'
 import Modal from '../components/Modal'
 import Button from '../components/Button'
 import { addCategory, deleteCategory, getAllCategories } from '../services/CategoryFunctions'
-import { getNotes } from '../services/NoteFunctions'
+import { getNotes, getNotesByCategory } from '../services/NoteFunctions'
 
 const Home = () => {
 
@@ -19,6 +19,7 @@ const Home = () => {
     // State for categories, initially fetched from the hook
     const [noteCategories, setNoteCategories] = useState([]);
     const [notes, setNotes] = useState([]);
+    const [limit, setLimit] = useState(5);
 
     // Update categories state when fetched
     useEffect(() => {
@@ -33,7 +34,7 @@ const Home = () => {
     const [catError, setCatError] = useState(false);
     const [notesError, setNotesError] = useState(false);
 
-    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("All");
     const fetchCategories = async () => {
         try {
             const formattedCategories = await getAllCategories();
@@ -65,6 +66,45 @@ const Home = () => {
             setNotesError(error.message);
         };
     }
+
+    const fetchNotesByCategory = async (categoryName, newLimit) => {
+        try {
+            console.log("Fetching notes by category", categoryName);
+            const category_id = noteCategories.find(category => category.category_name === categoryName).category_id;
+            console.log("Category id is", category_id);
+            const notes = await getNotesByCategory(category_id, newLimit);
+            if (notes.success) {
+                setNotes(notes.data);
+            }
+            else {
+                throw new Error(notes.message);
+            }
+        }
+        catch (error) {
+            console.error("Error fetching notes:", error);
+            setNotesError(error.message);
+        };
+    }
+
+    const handleTabChange = (category) => {
+        const categoryName = category.category_name;
+        setSelectedCategory(categoryName);
+        if (categoryName === "All") fetchNotes(limit); // Fetch all notes
+        else
+            fetchNotesByCategory(categoryName, limit); // Fetch notes for the new category
+    };
+
+    const handleLimitChange = (newLimit) => {
+        setLimit(newLimit);
+
+        if (selectedCategory === "All") {
+            console.log("fetching all notes");
+            fetchNotes(newLimit);
+        } else {
+            console.log("fetching notes by category", selectedCategory, newLimit);
+            fetchNotesByCategory(selectedCategory, newLimit);
+        }
+    };
 
     // handle category functions and call services to make API calls
     const addCategoryHandler = async (e) => {
@@ -113,6 +153,7 @@ const Home = () => {
         setCatMessage("");
         setCatError(false);
         setModalType(null);
+        setNotesError("");
 
     }
 
@@ -136,7 +177,7 @@ const Home = () => {
                     </div>
                     <div className='flex grow-1 gap-x-6  text-[#8B8B8B]'>
 
-                        <Tabbar categories={noteCategories} defaultVal="All" width={32} />
+                        <Tabbar categories={noteCategories} defaultVal="All" width={32} onTabChange={handleTabChange} />
                         <button className="text-[#303841] bg-green-300 text-sm px-2 h-8 ml-4 -mt-1 cursor-pointer hover:bg-green-200 rounded-lg" onClick={() => setModalType("add")}>+ Add Category</button>
                         <button className="text-[#303841] bg-red-300 px-2 text-sm h-8 ml-4 -mt-1 cursor-pointer hover:bg-red-200 rounded-lg" onClick={() => setModalType("delete")}>- Delete Category</button>
                     </div>
@@ -146,7 +187,7 @@ const Home = () => {
                         <select
                             id="noteCount"
                             className="outline-none text-sm p-2 w-28 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
-                            onChange={(e) => fetchNotes(e.target.value)}
+                            onChange={(e) => handleLimitChange(e.target.value)}
                         >
                             <option value="5">5 Notes</option>
                             <option value="10">10 Notes</option>
@@ -157,12 +198,6 @@ const Home = () => {
 
                     <div className='flex grow-8 mt-8 overflow-auto h-46 gap-y-10 pr-6 items-center gap-x-12 flex-wrap custom-scrollbar'>
 
-                        {/* <Notecard bgColor="#FFEAA7" />
-                        <Notecard bgColor="#FBA5A5" />
-                        <Notecard bgColor="#CCEABB" />
-                        <Notecard bgColor="#FFEAA7" />
-                        <Notecard bgColor="#FBA5A5" />
-                        <Notecard bgColor="#CCEABB" /> */}
                         {notes.map((note, index) => (
                             <Notecard key={index} bgColor={colors[index % colors.length]} note={note} />
                         ))}
