@@ -226,7 +226,7 @@ const PasswordLogin = () => {
 const Profile = () => {
     const [selected, setSelected] = useState('Basic Info');
     const handleTabChange = (newTab) => {
-        setSelected(newTab);
+        setSelected(newTab.category_name);
     };
     const User = useAuth();
 
@@ -241,7 +241,7 @@ const Profile = () => {
             <div className='flex flex-col p-16 w-5/6 gap-y-10 '>
                 <h1 className='text-xl font-semibold' >Settings</h1>
                 <div className='flex gap-x-16 text-[#8B8B8B]'>
-                    <Tabbar categories={categories} defaultVal="Basic Info" width={40} onTabChange={handleTabChange} />
+                    <Tabbar categories={categories} defaultVal="Basic Info" width={36} onTabChange={handleTabChange} />
                 </div>
                 {selected === 'Basic Info' ? <UserDetails /> : <PasswordLogin />}
             </div>
