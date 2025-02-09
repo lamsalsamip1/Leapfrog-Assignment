@@ -1,5 +1,17 @@
 # Notes Application
 
+
+## Features Implemented
+
+1. Email verification and two factor authentication.
+2. Color logging in backend.
+3. Swagger API documentation.
+4. Responsive UI to create, read, update and delete notes and categories.
+5. Searching of notes by title and content, filtering by category and quantity, sorting by creation and updated date.
+6. Migration scripts to keep track of database changes.
+7. Error handling in both frontend and backend.
+   
+
 ## Engineering Decisions
 
 ### Tech Stack
@@ -75,12 +87,17 @@ React, Node and MySQL was chosen as it was mentioned in the assignment. On top o
 
 Swagger can be accessed from /api-docs
 
-## Features Implemented
+Screenshots:
+![Screenshot 2025-02-10 043911](https://github.com/user-attachments/assets/83c98bc7-e29f-42b5-b305-84e2658842c5)
+![Screenshot 2025-02-10 044349](https://github.com/user-attachments/assets/c58d3903-f37f-4011-8cd3-28225dab2257)
+![Screenshot 2025-02-10 044406](https://github.com/user-attachments/assets/887eb222-2f3a-47e4-8aff-e3ef474319df)
+![Screenshot 2025-02-10 044028](https://github.com/user-attachments/assets/15b6f84c-a845-4af9-ab98-752d1b7c2bd8)
+![Screenshot 2025-02-10 044044](https://github.com/user-attachments/assets/b99565c9-0a6e-4900-9af6-3ee913b29bc0)
+![Screenshot 2025-02-10 044053](https://github.com/user-attachments/assets/6e18cd06-ef29-4dbf-9a11-67d4e10b5358)
+![Screenshot 2025-02-10 044100](https://github.com/user-attachments/assets/ca9a1e83-7717-4cc5-8ff0-c04d128d2f96)
+![Screenshot 2025-02-10 044107](https://github.com/user-attachments/assets/d0dee8bb-ecac-439f-a9b9-639653efd977)
+![Screenshot 2025-02-10 044112](https://github.com/user-attachments/assets/5ddeb0b3-ea24-4904-b2f5-676b55459ab1)
+![Screenshot 2025-02-10 044127](https://github.com/user-attachments/assets/99b1931a-9442-4edf-bc32-3e17157c9734)
+![Screenshot 2025-02-10 044202](https://github.com/user-attachments/assets/8dcf545e-e7fb-4b9d-bb50-99c129044fd8)
 
-1. Email verification and two factor authentication.
-2. Color logging in backend.
-3. Swagger API documentation.
-4. Responsive UI to create, read, update and delete notes and categories.
-5. Searching of notes by title and content, filtering by category and quantity, sorting by creation and updated date.
-6. Migration scripts to keep track of database changes.
-7. Error handling in both frontend and backend.
+
