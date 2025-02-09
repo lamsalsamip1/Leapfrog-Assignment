@@ -24,6 +24,19 @@ const UserService = {
       throw error;
     }
 
+    //check if password is 8 characters and uppercase letter
+    if (password.length < 8) {
+      const error = new Error("Password must be at least 8 characters long.");
+      error.status = 400; // 400 Bad Request
+      throw error;
+    } else if (!/[A-Z]/.test(password)) {
+      const error = new Error(
+        "Password must contain at least one uppercase letter."
+      );
+      error.status = 400; // 400 Bad Request
+      throw error;
+    }
+
     // Hash the password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);

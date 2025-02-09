@@ -82,7 +82,7 @@ const Register = () => {
                         </div>
                         <div className='flex flex-col justify-between h-50'>
                             <InputField label='Email Address' name='email' type='email' height={8} onChange={handleChange} />
-                            <InputField label='Password' name='password' type='password' height={8} onChange={handleChange} />
+                            <InputField label='Password' name='password' type='password' height={8} onChange={handleChange} mode="register" />
                             <InputField label='Confirm Password' name='confirmPassword' type='password' height={8} onChange={handleChange} />
                             {error && <p className='text-red-500 text-xs w-52 md:w-full'>{error}</p>}
                         </div>
