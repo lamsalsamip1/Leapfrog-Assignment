@@ -94,14 +94,14 @@ const Enable2FA = () => {
                 <div className={`fixed left-1/3 auto h-12 w-2/5   text-white text-center py-3 z-10 transition-discrete ease-in ${isError ? 'bg-red-400' : 'bg-[#6A7EFC]'} `}>{message}</div>
             )} */}
 
-            <div className=' flex h-2/3 w-2/3 m-auto shadow-lg bg-white'>
+            <div className=' flex h-3/4 md:h-2/3 w-full md:w-2/3 m-auto shadow-lg bg-white'>
 
-                <div className='bg-[#6A7EFC] h-full w-1/7'></div>
+                <div className='bg-[#6A7EFC] h-full w-1/7 hidden md:block'></div>
 
-                <div className='flex flex-col items-center justify-between py-12 grow-1  '>
+                <div className='flex flex-col items-center justify-between py-12 grow-1 px-4 '>
                     <div className='flex flex-col items-center gap-y-8'>
-                        <h1 className='text-[#6A7EFC] font-semibold text-3xl'>Enable Two Factor Authentication</h1>
-                        <p className='text-sm text-[#8B8B8B]'>Please scan the QR code with an authenticator app and enter the code. </p>
+                        <h1 className='text-[#6A7EFC] font-semibold text-center text-2xl md:text-3xl'>Enable Two Factor Authentication</h1>
+                        <p className='text-sm text-[#8B8B8B] text-center'>Please scan the QR code with an authenticator app and enter the code. </p>
                     </div>
 
                     <div>
@@ -118,13 +118,13 @@ const Enable2FA = () => {
                     {/* Show loading message */}
                     {loading && <Spinner text="Verifying.. Please wait" />}
                 </div>
-                <Modal isOpen={message} onClose={() => setIsModalOpen(false)} width='1/2'>
-                    <div className="p-8 rounded-lg shadow-lg w-full  bg-white">
+                <Modal isOpen={message} onClose={() => setMessage("")} width='1/2'>
+                    <div className="p-6 md:p-8 rounded-lg shadow-lg w-full  bg-white">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className={`text-2xl ${!isError ? 'text-[#6A7EFC]' : 'text-red-500'} font-bold`}>{message}</h2>
+                            <h2 className={`text-md md:text-xl mr-4 ${!isError ? 'text-[#6A7EFC]' : 'text-red-500'} font-bold`}>{message}</h2>
 
                         </div>
-                        <p >{!isError ? 'You will be redirected to the profile page.' : 'Please try again.'}</p>
+                        <p className='text-sm md:text-lg' >{!isError ? 'You will be redirected to the profile page.' : 'Please try again.'}</p>
                     </div>
                 </Modal>
 

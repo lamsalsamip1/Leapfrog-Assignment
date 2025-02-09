@@ -92,8 +92,6 @@ const UserDetails = () => {
 
 const PasswordLogin = () => {
 
-
-
     const User = useAuth();
     const { twoFAEnabled } = User || {};
     console.log(twoFAEnabled)
@@ -184,7 +182,7 @@ const PasswordLogin = () => {
 
     }
     return (
-        <div className='flex justify-between w-1/2'>
+        <div className='flex flex-col gap-y-10 md:flex-row justify-between w-full md:w-3/5 lg:w-9/10 xl:w-1/2'>
 
             <form onSubmit={handlePwChange} className='flex flex-col gap-y-10 mt-2'>
 
@@ -199,10 +197,10 @@ const PasswordLogin = () => {
 
             </form>
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} width='1/2'>
-                <div className="p-8 rounded-lg shadow-lg w-full  bg-white">
+                <div className="p-6 md:p-8 rounded-lg shadow-lg w-full  bg-white">
                     <div className="flex flex-col gap-y-10 h-full mb-4">
-                        <h2 className={`text-2xl ${!error ? 'text-[#6A7EFC]' : 'text-red-500'} font-bold`}>{modalMessage}</h2>
-                        <p >{!error ? 'Your password has been successfully updated. ' : 'Please try again.'}</p>
+                        <h2 className={`text-md md:text-xl ${!error ? 'text-[#6A7EFC]' : 'text-red-500'} font-bold`}>{modalMessage}</h2>
+                        <p className='text-sm md:text-xl'>{!error ? 'Your password has been successfully updated. ' : 'Please try again.'}</p>
                     </div>
 
                 </div>
@@ -235,13 +233,15 @@ const Profile = () => {
         { category_id: 2, category_name: "Password & Login" }
     ];
 
+    const [isMobile, setIsMobile] = useState(false);
+
     return (
-        <div className='flex h-screen '>
-            <Navbar user={User} />
-            <div className='flex flex-col p-16 w-5/6 gap-y-10 '>
+        <div className='flex h-screen w-screen '>
+            <Navbar user={User} onMobileToggle={setIsMobile} />
+            <div className={`${isMobile ? 'hidden' : 'flex'}  lg:flex flex-col w-full p-16 gap-y-10`}>
                 <h1 className='text-xl font-semibold' >Settings</h1>
-                <div className='flex gap-x-16 text-[#8B8B8B]'>
-                    <Tabbar categories={categories} defaultVal="Basic Info" width={36} onTabChange={handleTabChange} />
+                <div className='flex gap-x-6  md:gap-x-16 text-[#8B8B8B]'>
+                    <Tabbar categories={categories} defaultVal="Basic Info" width={"36"} onTabChange={handleTabChange} />
                 </div>
                 {selected === 'Basic Info' ? <UserDetails /> : <PasswordLogin />}
             </div>
