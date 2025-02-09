@@ -46,7 +46,7 @@ const Navbar = ({ user = null }) => {
     return (
         <nav className='flex flex-col h-full w-1/6 bg-[#6A7EFC] items-center p-6 pt-16 pb-1 justify-between'>
             {/* Text logo with inter font */}
-            <h1 className='text-2xl text-white grow-2 '>NOTES APP</h1>
+            <h1 className='text-xl md:text-2xl text-white text-center grow-2 '>NOTES APP</h1>
 
             <ul className='flex flex-col text-white space-y-4 grow-6 w-full text-center'>
                 <Link to='/notes'>

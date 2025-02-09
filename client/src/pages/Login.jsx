@@ -26,14 +26,14 @@ const Login = () => {
     const [message, setMessage] = useState("");
     const [isError, setError] = useState(false);
 
-    useEffect(() => {
-        if (message) {
-            const timer = setTimeout(() => {
-                setMessage(""); // Clear message after 5 seconds
-            }, 5000);
-            return () => clearTimeout(timer); // Cleanup timeout on component unmount or message change
-        }
-    }, [message]);
+    // useEffect(() => {
+    //     if (message) {
+    //         const timer = setTimeout(() => {
+    //             setMessage(""); // Clear message after 5 seconds
+    //         }, 5000);
+    //         return () => clearTimeout(timer); // Cleanup timeout on component unmount or message change
+    //     }
+    // }, [message]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -84,23 +84,23 @@ const Login = () => {
                 <div className={`fixed left-2/5 auto h-12 w-1/5   text-white text-center py-3 z-10 transition-discrete ease-in ${isError ? 'bg-red-400' : 'bg-[#6A7EFC]'} `}>{message}</div>
             )} */}
             <Modal isOpen={message} onClose={() => setMessage("")} width='1/2'>
-                <div className="p-8 rounded-lg shadow-lg w-full  bg-white">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className={`text-2xl ${!isError ? 'text-[#6A7EFC]' : 'text-red-500'} font-bold`}>{message}</h2>
+                <div className="flex flex-col p-6 md:p-8 rounded-lg shadow-lg w-full bg-white">
+                    <div className="flex justify-between items-center mb-4 mr-4">
+                        <h2 className={`text-md md:text-xl ${!isError ? 'text-[#6A7EFC]' : 'text-red-500'} font-bold`}>{isError ? "An error occured." : message}</h2>
 
                     </div>
-                    <p >{!isError ? 'You will be redirected to the notes page.' : 'Please try again.'}</p>
+                    <p className='text-sm md:text-lg'>{!isError ? 'You will be redirected to the notes page.' : message}</p>
                 </div>
             </Modal>
 
-            <div className=' flex h-2/3 w-2/3 m-auto shadow-lg bg-white'>
+            <div className=' flex flex-col md:flex-row h-2/3 w-2/3 m-auto shadow-lg bg-white'>
 
-                <div className='bg-[#6A7EFC] h-full w-1/7'></div>
+                <div className='bg-[#6A7EFC] h-1/8 md:h-full w-full md:w-1/7'></div>
 
-                <div className='flex flex-col items-center gap-y-6 grow-1 py-12 -ml-10'>
+                <div className='flex flex-col items-center gap-y-6 grow-1 py-12 md:-ml-10'>
                     <div className='flex flex-col items-center gap-y-4'>
-                        <h1 className='text-[#6A7EFC] font-semibold text-3xl'>Login</h1>
-                        <p className='text-xs text-[#8B8B8B]'>Please enter your details to login to your account</p>
+                        <h1 className='text-[#6A7EFC] font-semibold text-2xl md:text-3xl'>Login</h1>
+                        <p className='text-xs text-[#8B8B8B] hidden md:block'>Please enter your details to login to your account</p>
                     </div>
                     <form onSubmit={handleLogin} className='flex flex-col gap-y-6 mt-4'>
 
