@@ -32,8 +32,6 @@ React, Node and MySQL was chosen as it was mentioned in the assignment. On top o
 
 ## Setup Instructions
 
-### Frontend Setup
-
 1. Clone the repository:
 
    ```bash
@@ -74,3 +72,5 @@ React, Node and MySQL was chosen as it was mentioned in the assignment. On top o
    cd client
    npm run dev
    ```
+
+Swagger can be accessed from /api-docs
