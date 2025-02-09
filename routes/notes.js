@@ -16,7 +16,7 @@ const router = express.Router();
  *     summary: Get all notes
  *     tags: [Notes]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: limit
@@ -49,7 +49,7 @@ router.get("/filter/:limit", getAllNotes);
  *     summary: Get notes by category ID with a limit
  *     tags: [Notes]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -88,7 +88,7 @@ router.get("/catfilter/:id", getNoteByCategory);
  *     summary: Create a new note
  *     tags: [Notes]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -125,7 +125,7 @@ router.post("/", createNote);
  *     summary: Update a note by ID
  *     tags: [Notes]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -171,7 +171,7 @@ router.put("/:id", updateNote);
  *     summary: Delete a note by ID
  *     tags: [Notes]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id

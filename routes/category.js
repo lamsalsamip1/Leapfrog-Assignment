@@ -11,12 +11,22 @@ const router = express.Router();
 
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     cookieAuth:
+ *       type: apiKey
+ *       in: cookie
+ *       name: token  # Name of the cookie storing the JWT token
+ */
+
+/**
+ * @swagger
  * /api/category:
  *   get:
  *     summary: Get all categories
  *     tags: [Category]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: A list of categories
@@ -40,7 +50,7 @@ router.get("/", getAllCategories);
  *     summary: Get a single category by ID
  *     tags: [Category]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -71,7 +81,7 @@ router.get("/:id", getCategoryById);
  *     summary: Create a new category
  *     tags: [Category]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -102,7 +112,7 @@ router.post("/", createCategory);
  *     summary: Update a category by ID
  *     tags: [Category]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -142,7 +152,7 @@ router.put("/:id", updateCategory);
  *     summary: Delete a category by ID
  *     tags: [Category]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id

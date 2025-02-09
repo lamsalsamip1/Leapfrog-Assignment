@@ -132,7 +132,7 @@ router.post("/login", loginUser);
  *     summary: Enable two-factor authentication
  *     tags: [User]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Two-factor authentication enabled successfully. Tell user to scan the QR code.
@@ -174,7 +174,7 @@ router.post("/connect-otp", authMiddleware, connectOTP);
  *     summary: Disable two-factor authentication
  *     tags: [User]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Two-factor authentication disabled successfully.
@@ -188,7 +188,7 @@ router.post("/disable-2fa", authMiddleware, disable2FA);
  *     summary: Verify two-factor authentication OTP
  *     tags: [User]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -213,7 +213,7 @@ router.post("/verify-otp", verifyOTP);
  *     summary: Get user profile
  *     tags: [User]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: User details fetched successfully
@@ -246,7 +246,7 @@ router.post("/logout", logout);
  *     summary: Edit user details
  *     tags: [User]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -276,7 +276,7 @@ router.put("/edit", authMiddleware, editUserDetails);
  *    summary: Change user password
  *    tags: [User]
  *    security:
- *      - bearerAuth: []
+ *      - cookieAuth: []
  *    requestBody:
  *      required: true
  *      content:
