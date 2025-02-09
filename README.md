@@ -74,3 +74,13 @@ React, Node and MySQL was chosen as it was mentioned in the assignment. On top o
    ```
 
 Swagger can be accessed from /api-docs
+
+## Features Implemented
+
+1. Email verification and two factor authentication.
+2. Color logging in backend.
+3. Swagger API documentation.
+4. Responsive UI to create, read, update and delete notes and categories.
+5. Searching of notes by title and content, filtering by category and quantity, sorting by creation and updated date.
+6. Migration scripts to keep track of database changes.
+7. Error handling in both frontend and backend.
