@@ -53,11 +53,11 @@ React, Node and MySQL was chosen as it was mentioned in the assignment. On top o
    DB_NAME=
    DB_USER=
    DB_PASS=
-   JWT_EXPIRY=
-   JWT_EMAIL_EXPIRY=
-   JWT_SECRET=
-   EMAIL_USER=
-   EMAIL_PASS= use app password
+   JWT_EXPIRY=expiry of login token (eg 30m)
+   JWT_EMAIL_EXPIRY=expiry of verification email token (eg 12h)
+   JWT_SECRET= jwt secret generated for auth
+   EMAIL_USER= email address to send mails from
+   EMAIL_PASS= use app password of email account
    BASE_URL=http://localhost:5000
    ```
 
