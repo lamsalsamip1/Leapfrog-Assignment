@@ -5,7 +5,7 @@ import InputField from '../components/InputField'
 import Button from '../components/Button'
 import useAuth from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
-
+import Modal from '../components/Modal'
 
 const UserDetails = () => {
 
@@ -15,8 +15,9 @@ const UserDetails = () => {
 
     const [userFirstName, setFirstName] = useState(firstName);
     const [userLastName, setLastName] = useState(lastName);
-
-
+    const [modalMessage, setModalMessage] = useState('');
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [isError, setError] = useState(false);
 
 
     const handleSubmit = async (e) => {
@@ -34,11 +35,19 @@ const UserDetails = () => {
             const data = await response.json();
             console.log(data);
             if (response.ok) {
-                alert("User updated")
-                window.location.reload(false);
+
+                setModalOpen(true);
+                setModalMessage("User updated");
+                setTimeout(() => {
+                    window.location.reload(false);
+                }, 2000);
+
 
             } else {
-                alert("Update failed !");
+
+                setModalOpen(true);
+                setModalMessage("Update failed !");
+                setError(true);
 
             }
         } catch (error) {
@@ -67,15 +76,22 @@ const UserDetails = () => {
             <div className='w-1/2'>
                 <button className="bg-[#6A7EFC] hover:bg-[#6aa2fc] text-xs font-bold text-white w-36 py-3 cursor-pointer rounded-2xl active:translate-y-1" type='submit'>Save Changes</button>
             </div>
+            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} width='1/2'>
+                <div className="p-8 rounded-lg shadow-lg w-full  bg-white">
+                    <div className="flex flex-col gap-y-10 h-full mb-4">
+                        <h2 className={`text-2xl ${!isError ? 'text-[#6A7EFC]' : 'text-red-500'} font-bold`}>{modalMessage}</h2>
+                        <p >{!isError ? 'Your first name and last name has been successfully updated. ' : 'Please try again.'}</p>
+                    </div>
 
-
-
-
+                </div>
+            </Modal>
         </form>
+
     )
 }
 
 const PasswordLogin = () => {
+
 
 
     const User = useAuth();
@@ -89,6 +105,8 @@ const PasswordLogin = () => {
         newPassword: '',
         reNewPassword: ''
     });
+    const [modalMessage, setModalMessage] = useState('');
+    const [isModalOpen, setModalOpen] = useState(false);
     const [error, setError] = useState('');
 
     const handleChange = (e) => {
@@ -111,7 +129,9 @@ const PasswordLogin = () => {
     const handlePwChange = async (e) => {
         e.preventDefault();
         if (formData.newPassword !== formData.reNewPassword) {
-            alert("Passwords do not match");
+            setModalOpen(true);
+            setModalMessage("Passwords do not match");
+            setError("Passwords do not match");
             return;
         }
         // make a fetch request to update the user details
@@ -127,11 +147,24 @@ const PasswordLogin = () => {
             const data = await response.json();
             console.log(data);
             if (response.ok) {
-                alert("Password updated")
-                window.location.reload(false);
+
+                setModalOpen(true);
+                setModalMessage("Password updated");
+                setFormData({
+                    oldPassword: '',
+                    newPassword: '',
+                    reNewPassword: ''
+                });
 
             } else {
-                alert("Update failed !");
+                setModalOpen(true);
+                setModalMessage(data.msg);
+                setError(data.msg);
+                setFormData({
+                    oldPassword: '',
+                    newPassword: '',
+                    reNewPassword: ''
+                });
 
             }
         }
@@ -165,6 +198,15 @@ const PasswordLogin = () => {
 
 
             </form>
+            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} width='1/2'>
+                <div className="p-8 rounded-lg shadow-lg w-full  bg-white">
+                    <div className="flex flex-col gap-y-10 h-full mb-4">
+                        <h2 className={`text-2xl ${!error ? 'text-[#6A7EFC]' : 'text-red-500'} font-bold`}>{modalMessage}</h2>
+                        <p >{!error ? 'Your password has been successfully updated. ' : 'Please try again.'}</p>
+                    </div>
+
+                </div>
+            </Modal>
             <form onSubmit={handle2FA} className='flex flex-col gap-y-10 mt-2'>
 
                 <div className='flex flex-col gap-y-1'>

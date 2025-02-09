@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMobileScreen } from '@fortawesome/free-solid-svg-icons';
 import Spinner from '../components/Spinner';
 import { useNavigate } from 'react-router-dom';
+import Modal from '../components/Modal';
+
 const TwoFA = () => {
 
     const navigate = useNavigate();
@@ -59,9 +61,19 @@ const TwoFA = () => {
 
     return (
         <div className='h-screen w-screen bg-[#EDF2F6] flex '>
-            {message && (
+            {/* {message && (
                 <div className={`fixed left-2/5 auto h-12 w-1/5   text-white text-center py-3 z-10 transition-discrete ease-in ${isError ? 'bg-red-400' : 'bg-[#6A7EFC]'} `}>{message}</div>
-            )}
+            )} */}
+            <Modal isOpen={message} onClose={() => setMessage("")} width='1/2'>
+                <div className="p-8 rounded-lg shadow-lg w-full  bg-white">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className={`text-2xl ${!isError ? 'text-[#6A7EFC]' : 'text-red-500'} font-bold`}>{message}</h2>
+
+                    </div>
+                    <p >{!isError ? 'You will be redirected to the notes page.' : 'Please try again.'}</p>
+                </div>
+            </Modal>
+
 
             <div className=' flex h-2/3 w-2/3 m-auto shadow-lg bg-white'>
 
@@ -82,7 +94,7 @@ const TwoFA = () => {
                     </div>
                     <form className='flex flex-col gap-y-6 mt-4' onSubmit={verifyOTP}>
                         <InputField type='text' value={otp} onChange={handleChange} />
-                        <Button btnLabel={"Verify"} width={5} />
+                        <Button btnLabel={"Verify"} width={25} />
 
                     </form>
                 </div>

@@ -189,6 +189,20 @@ const UserService = {
 
   // enable 2fa
   async enable2FA(userId) {
+    //check if two factor authentication is already enabled
+    const user = await User.findByPk(userId);
+    if (!user) {
+      const error = new Error("User not found.");
+      error.status = 404; // 404 Not Found
+      throw error;
+    }
+
+    // if (user.twoFAEnabled) {
+    //   const error = new Error("Two-factor authentication already enabled.");
+    //   error.status = 400; // 400 Bad Request
+    //   throw error;
+    // }
+
     // generate secret
     const secret = speakeasy.generateSecret({
       name: "NotesApp",
@@ -197,7 +211,7 @@ const UserService = {
 
     // save secret in database
     await User.update(
-      { twoFASecret: secret.base32, twoFAEnabled: true },
+      { twoFASecret: secret.base32 },
       { where: { user_id: userId } }
     );
 
@@ -242,7 +256,7 @@ const UserService = {
       error.status = 401; // 401 Unauthorized
       throw error;
     }
-
+    await User.update({ twoFAEnabled: true }, { where: { user_id: userId } });
     // Generate a JWT token
     const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRY,

@@ -17,7 +17,7 @@ const Verified = () => {
                     </div>
 
                     <p className=' text-gray-500 w-3/4 '>You can proceed to login
-                        <Link to='/login' className=' text-black' > here. </Link></p>
+                        <Link to='/' className=' text-black' > here. </Link></p>
                 </div>
 
 

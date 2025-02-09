@@ -272,7 +272,7 @@ const Home = () => {
             </div>
 
             {modalType == "add" &&
-                <Modal isOpen={true} onClose={() => clearModal()}>
+                <Modal isOpen={true} onClose={() => clearModal()} width='1/4'>
                     <div className='flex flex-col p-7 gap-y-6 pr-2'>
                         <h1 className='text-xl font-semibold text-[#6A7EFC] rounded-md'>Add Category</h1>
                         <form className='flex justify-between w-90 pr-4' onSubmit={addCategoryHandler}>
@@ -287,7 +287,7 @@ const Home = () => {
             }
 
             {modalType == "delete" &&
-                <Modal isOpen={true} onClose={() => clearModal()}>
+                <Modal isOpen={true} onClose={() => clearModal()} width='1/4'>
                     <div className='flex flex-col p-7 gap-y-6 pr-2'>
                         <h1 className='text-xl font-semibold text-[#6A7EFC]'>Delete Category</h1>
                         <form className='flex justify-between w-90 pr-4' onSubmit={deleteCategoryHandler}>
@@ -313,7 +313,7 @@ const Home = () => {
             }
 
             {notesError &&
-                <Modal isOpen={true} onClose={() => clearModal()}>
+                <Modal isOpen={true} onClose={() => clearModal()} width='1/4'>
                     <div className='flex flex-col justify-between w-60 p-7 pr-2'>
                         <h1 className='text-[#6A7EFC] font-bold text-xl'>Error </h1>
                         <p className='text-sm text-red-600'>Could not fetch notes</p>
