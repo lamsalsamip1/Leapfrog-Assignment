@@ -99,5 +99,6 @@ Screenshots:
 ![Screenshot 2025-02-10 044112](https://github.com/user-attachments/assets/5ddeb0b3-ea24-4904-b2f5-676b55459ab1)
 ![Screenshot 2025-02-10 044127](https://github.com/user-attachments/assets/99b1931a-9442-4edf-bc32-3e17157c9734)
 ![Screenshot 2025-02-10 044202](https://github.com/user-attachments/assets/8dcf545e-e7fb-4b9d-bb50-99c129044fd8)
+![Screenshot 2025-02-10 044501](https://github.com/user-attachments/assets/373e59f4-cb55-44bf-a40e-a0284c5616c5)
 
 
