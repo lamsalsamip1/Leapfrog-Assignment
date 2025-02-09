@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Searchbar from '../components/Searchbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import Tabbar from '../components/Tabbar'
 import Notecard from '../components/Notecard'
 import useAuth from '../hooks/useAuth'
@@ -201,35 +201,41 @@ const Home = () => {
     }
 
     const colors = ["#FFEAA7", "#FBA5A5", "#CCEABB"];
-
+    const [isMobile, setIsMobile] = useState(false);
     return (
         <>
-            <div className='flex h-screen '>
+            <div className='flex h-screen w-screen'>
 
-                <Navbar user={User} />
+                <Navbar user={User} onMobileToggle={setIsMobile} />
 
-                <main className='flex flex-col gap-y-2 h-full bg-[#F2F9FF] w-5/6  p-16 pb-4'>
+                <main className={`${isMobile ? 'hidden' : 'flex'} flex-col gap-y-2 h-full bg-[#F2F9FF] w-full  p-8 md:p-10 lg:p-16 pb-4`}>
 
                     <div className='flex flex-row grow-1 justify-between pr-4'>
                         <Searchbar value={searchQuery} onChange={handleSearchChange} />
 
-                        <div className='flex gap-x-2  text-[#303841] cursor-pointer hover:text-[#4b4e52] active:translate-y-1' onClick={() => setAddNote(true)}>
+                        <div className='lg:flex hidden gap-x-2  text-[#303841] cursor-pointer hover:text-[#4b4e52] active:translate-y-1 ' onClick={() => setAddNote(true)}>
                             <FontAwesomeIcon icon={faCirclePlus} className=' text-2xl  mt-1' />
                             <p className=' text-lg '>New Note</p>
                         </div>
                     </div>
                     <div className='flex grow-1 gap-x-6  text-[#8B8B8B]'>
 
-                        <Tabbar categories={noteCategories} defaultVal="All" width={32} onTabChange={handleTabChange} />
-                        <button className="text-[#303841] bg-green-300 text-sm px-2 h-8 ml-4 -mt-1 cursor-pointer hover:bg-green-200 rounded-lg" onClick={() => setModalType("add")}>+ Add Category</button>
-                        <button className="text-[#303841] bg-red-300 px-2 text-sm h-8 ml-4 -mt-1 cursor-pointer hover:bg-red-200 rounded-lg" onClick={() => setModalType("delete")}>- Delete Category</button>
+                        <div className='overflow-x-auto flex w-full gap-x-4'>
+                            <Tabbar categories={noteCategories} defaultVal="All" width={32} onTabChange={handleTabChange} />
+                        </div>
+                        <button className="text-[#303841] bg-green-300 text-sm px-2 h-8 ml-4 -mt-1 cursor-pointer hover:bg-green-200 rounded-lg hidden md:inline-block whitespace-nowrap" onClick={() => setModalType("add")}>+ Add Category</button>
+                        <button className="text-[#303841] bg-red-300 px-2 text-sm h-8 ml-4 -mt-1 cursor-pointer hover:bg-red-200 rounded-lg hidden md:inline-block whitespace-nowrap" onClick={() => setModalType("delete")}>- Delete Category</button>
                     </div>
-                    <div className='flex gap-x-20 mt-4'>
+                    <div className='flex flex-col lg:flex-row gap-4 mt-4'>
+                        <div className='flex lg:hidden gap-x-3 py-1 bg-[#303841] text-white text-center items-center justify-center rounded-lg font-medium' onClick={() => setAddNote(true)}>
+                            <FontAwesomeIcon icon={faPlus} className=' text-sm' />
+                            <p className=' text-md  '>New Note</p>
+                        </div>
                         <div className='flex items-center gap-x-4'>
-                            <label htmlFor="noteCount" className="text-[#303841] font-semibold">Show Notes</label>
+                            <label htmlFor="noteCount" className="text-[#303841] font-semibold whitespace-nowrap">Show Notes</label>
                             <select
                                 id="noteCount"
-                                className="outline-none text-sm p-2 w-28 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
+                                className="outline-none text-sm p-2 w-full md:w-28 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
                                 onChange={(e) => handleLimitChange(e.target.value)}
                             >
                                 <option value="5">5 Notes</option>
@@ -241,10 +247,10 @@ const Home = () => {
                             </select>
                         </div>
                         <div className='flex items-center gap-x-4'>
-                            <label htmlFor="noteCount" className="text-[#303841] font-semibold">Sort By</label>
+                            <label htmlFor="noteCount" className="text-[#303841] font-semibold whitespace-nowrap">Sort By</label>
                             <select
                                 id="noteCount"
-                                className="outline-none text-sm p-2 w-48 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
+                                className="outline-none text-sm p-2 w-full md:w-48 rounded-md bg-white border-2 border-gray-300 hover:border-[#6A7EFC] focus:border-[#6A7EFC] transition duration-200"
                                 onChange={(e) => handleSort(e.target.value)}
                             >
                                 <option value="createdAt-asc">Creation Date (ASC)</option>
@@ -258,7 +264,7 @@ const Home = () => {
 
 
 
-                    <div className='flex grow-8 mt-8 overflow-auto h-46 gap-y-10 pr-6 items-center gap-x-12 flex-wrap custom-scrollbar'>
+                    <div className='flex grow-8 mt-8 overflow-auto h-46 gap-y-10 pr-6 justify items-center gap-x-12 flex-wrap custom-scrollbar'>
 
                         {filteredNotes.map((note, index) => (
                             <Notecard key={index} bgColor={colors[index % colors.length]} note={note} onEdit={handleEditIconClick} />

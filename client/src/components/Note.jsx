@@ -130,10 +130,10 @@ const Note = ({ onClose, categories, existingNote, onNoteCallback }) => {
 
     return (
         <div className="fixed inset-0 bg-black/90 flex justify-center items-center">
-            <div className="bg-white w-3/4 p-6 rounded-lg shadow-lg">
+            <div className="bg-white w-full h-screen lg:h-fit lg:w-3/4 p-6 rounded-lg shadow-lg">
                 <div className='flex justify-between items-center'>
                     <h2 className="text-2xl font-bold text-[#6A7EFC] mb-4">{existingNote ? 'Edit Note' : 'Add New Note'}</h2>
-                    <p className={!error ? 'text-green-600' : 'text-red-500'}>{message}</p>
+                    <p className={!error ? 'text-green-600 align-baseline' : 'text-red-500 align-baseline'}>{message}</p>
                 </div>
 
                 <form className="flex flex-col gap-y-8">
@@ -190,7 +190,7 @@ const Note = ({ onClose, categories, existingNote, onNoteCallback }) => {
                     </div>
                 </form>
             </div>
-        </div>
+        </div >
     );
 };
 
