@@ -1,6 +1,8 @@
 # Notes Application
 
-Deployed URL" **https://samipnotesappfrontend.azurewebsites.net/**
+Deployed APP URL **https://samipnotesappfrontend.azurewebsites.net/**
+
+The category and notes are all empty for a new user. As I have designed the database to have different categories for each user, it needs to be created by the user manually after signup.
 
 ## Features Implemented
 
