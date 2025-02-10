@@ -1,5 +1,6 @@
 # Notes Application
 
+Deployed URL: https://samipnotesappfrontend.azurewebsites.net
 
 ## Features Implemented
 
